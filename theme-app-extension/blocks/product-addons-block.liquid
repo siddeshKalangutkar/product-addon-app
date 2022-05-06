@@ -1,0 +1,141 @@
+{% if template contains "product" %}
+    <div id="product_addon_app">
+        <div class="addon-modal-overlay"></div>
+        <div class="addon-modal">
+            <div class="addon-modal-body">
+                {% comment %}
+                {% assign meta_string =  product.metafields.app_meta | json | replace: '"', '' | replace: '{','' | replace: "}" , "" %}
+                {% assign meta_field_string = meta_string | split: "," %}
+                {% for meta_item in meta_field_string %}
+                    {% assign meta_item_value = meta_item | split: ":" %}
+                    <p class="addon-rule-title">{{meta_item_value[0]}}</p>
+
+                    {% if meta_item_value[1] contains "collections" %}
+                        {% assign collection_handle_array = meta_item_value[1] | replace: "[" , "" | replace: "]" , "" | split: "|" %}
+                        {% assign collection_handles = collection_handle_array[1] | split: ";" %}
+                        {% for handle in collection_handles %}
+                            {% assign handle_format = handle | strip %}
+                            {% for addon_product in collections[handle_format].products %}
+                            <span class="addon-rule-item">
+                                {{addon_product.title}}
+                                <span>
+                                    (+{{addon_product.selected_or_first_available_variant.price | money}})
+                                    <input type="checkbox" class="addon-input" value="{{addon_product.selected_or_first_available_variant.id}}" data-addon-title="{{addon_product.title}}" data-addon-price="{{addon_product.selected_or_first_available_variant.price | money_without_currency }}">
+                                </span>
+                            </span>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if meta_item_value[1] contains "products" %}
+                        {% assign product_handle_array = meta_item_value[1] | replace: "[" , "" | replace: "]" , "" | split: "|" %}
+                          {% assign product_handles = product_handle_array[1] | split: ";" %}
+                              {% for handle in product_handles %}
+                                {% assign handle_format = handle | strip %}
+                                <span class="addon-rule-item">
+                                    {{all_products[handle_format].title}}
+                                    <span>
+                                        (+{{all_products[handle_format].selected_or_first_available_variant.price | money}})
+                                        <input type="checkbox" class="addon-input" value="{{all_products[handle_format].selected_or_first_available_variant.id}}" data-addon-title="{{all_products[handle_format].title}}" data-addon-price="{{all_products[handle_format].selected_or_first_available_variant.price | money_without_currency }}">
+                                    </span>
+                                </span>
+                              {% endfor %}
+                    {% endif%}
+
+                {% endfor %}
+                {% endcomment %}
+
+                {% assign meta_string =  product.metafields.app_meta %}
+                {% for meta in meta_string %}
+                <p class="addon-rule-title">{{meta.first}}</p>
+                {% for meta_items in meta.last.value %}
+                <span class="addon-rule-item">
+                    {{meta_items.first}}
+                    <span>
+                    (+{{meta_items.last| times: 100.00 | money }})
+                    <input type="checkbox" class="addon-input" value="{{meta_items.first}}" data-addon-title="{{meta_items.first}}" data-addon-price="{{meta_items.last| times: 100.00 | money_without_currency }}">
+                    </span>
+                </span>
+                {% endfor %}
+                {% endfor %}
+
+                <button class="addon-atc">Add To Cart</button>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% if template contains 'cart'%}
+    <script>
+        window.pdtAddOn = {{cart | json}};
+
+        window.pdtAddonUpdate = function(cart_obj) {
+            let price_array = cart_obj.items.map(item => { return ( Math.round ( ( ( item.properties._addon_price * item.quantity + ( item.final_line_price / 100 ) ) + Number.EPSILON ) * 100 ) / 100 )})
+            let total_cart_price = price_array.reduce((a, b) => a + b, 0)
+            let total_price_element = document.querySelector('.totals__subtotal-value')
+            total_price_element.innerHTML = "{{ 0 | money_with_currency | money_without_trailing_zeros | remove: '0' }}" + total_cart_price;
+            let cart_item_list = document.querySelectorAll('.cart-item')
+            let cart_items = [...cart_item_list]
+            for(i=0 ; i < cart_items.length ; i++ ){
+                if (price_array[i]){
+                    let price_element_list = cart_items[i].querySelectorAll('.price.price--end')
+                    let price_elements = [...price_element_list]
+                    for(j = 0 ; j < price_elements.length ; j++ ){
+                        price_elements[j].innerHTML = "{{ 0 | money_with_currency | money_without_trailing_zeros | remove: '0' }} " + price_array[i];
+                    }
+                    console.log(i + ". " + "main product")
+                }
+                else{
+                    cart_items[i].style.display = "none";
+                    console.log(i + ". " + "addon")
+                }
+            }
+        }
+        window.pdtAddonUpdate(window.pdtAddOn);
+
+        (function(ns, fetch) {
+            if (typeof fetch !== 'function') return;
+            ns.fetch = function() {
+              var output = fetch.apply(this, arguments);
+              //output.then(({ ok }) => setTimeout(function(){window.pdtAddonUpdate(window.pdtAddOn)},20));
+              output.then(res => { 
+                let clone_output = res.clone();
+                return clone_output.json()}).then( json_data => setTimeout(function(){window.pdtAddonUpdate(json_data)},20))
+              return output;
+            }
+        }(window, window.fetch))
+
+        //TODO
+        async function checkout(){
+            let cart_data_response = await fetch('/cart.js')
+            let {items} = await cart_data_response.json()
+            let data = [];
+            let draft_line_items = items.map( item => {
+                let item_properties = []
+                for (const key in item.properties) {
+                    item_properties.push({name: key , value : item.properties[key]})
+                }
+                data.push({ variant_id : item.variant_id, quantity : item.quantity, properties: item_properties })
+                let addon_array = item.properties._addon_titles.split(",");
+                addon_array.forEach( add_on => data.push({title: add_on, quantity: item.quantity, price: item.properties[add_on] }))
+            } )
+            let data_format = {
+                draft_order: {
+                    line_items: data
+                }
+            }
+            let data_string = JSON.stringify(data_format).replace(/"/gi,'\\"')
+            console.log(data_string)
+        }
+    </script>
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Product Addons Block",
+    "target": "body",
+    "stylesheet": "theme-extension.css",
+    "javascript": "theme-extension.js",
+    "settings": []
+  }
+{% endschema %}
