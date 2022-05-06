@@ -113,18 +113,17 @@
             let draft_line_items = items.map( item => {
                 let item_properties = []
                 for (const key in item.properties) {
-                    item_properties.push({name: key , value : item.properties[key]})
+                    item_properties.push({key: key , value : ""+item.properties[key]})
                 }
-                data.push({ variant_id : item.variant_id, quantity : item.quantity, properties: item_properties })
+                data.push({ variantId : "gid://shopify/ProductVariant/"+item.variant_id, quantity : item.quantity, customAttributes: item_properties })
                 let addon_array = item.properties._addon_titles.split(",");
-                addon_array.forEach( add_on => data.push({title: add_on, quantity: item.quantity, price: item.properties[add_on] }))
+                addon_array.forEach( add_on => data.push({title: add_on, quantity: item.quantity, originalUnitPrice: item.properties[add_on] }))
             } )
             let data_format = {
-                draft_order: {
-                    line_items: data
-                }
+                lineItems: data
             }
-            let data_string = JSON.stringify(data_format).replace(/"/gi,'\\"')
+            //let data_string = JSON.stringify(data_format).replace(/"/gi,'\\"')
+            let data_string = JSON.stringify(data_format)
             console.log(data_string)
         }
     </script>
