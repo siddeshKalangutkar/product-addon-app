@@ -14,6 +14,8 @@ const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
 const PORT = parseInt(process.env.PORT || "8081", 10);
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
+import cors from "cors";
+
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
   API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
@@ -93,7 +95,8 @@ export async function createServer(
     next();
   });
 
-  app.get("/api/checkout", async (req, res) => {
+  app.get("/api/checkout", cors(), async (req, res) => {
+    console.log("shop",Shopify.Context.SESSION_STORAGE)
     res.send(`Checkout passed`)
     console.log('checkout called')
   });

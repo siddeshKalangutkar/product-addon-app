@@ -47,13 +47,13 @@
 
                 {% assign meta_string =  product.metafields.app_meta %}
                 {% for meta in meta_string %}
-                <p class="addon-rule-title">{{meta.first}}</p>
+                <p class="addon-rule-title">{{ meta.first }}</p>
                 {% for meta_items in meta.last.value %}
                 <span class="addon-rule-item">
-                    {{meta_items.first}}
+                    {{ meta_items.first }}
                     <span>
-                    (+{{meta_items.last| times: 100.00 | money }})
-                    <input type="checkbox" class="addon-input" value="{{meta_items.first}}" data-addon-title="{{meta_items.first}}" data-addon-price="{{meta_items.last| times: 100.00 | money_without_currency }}">
+                    (+{{ meta_items.last | times: 100.00 | money }})
+                    <input type="checkbox" class="addon-input" value="{{ meta_items.first }}" data-addon-title="{{ meta_items.first }}" data-addon-price="{{ meta_items.last | times: 100.00 | money_without_currency }}">
                     </span>
                 </span>
                 {% endfor %}
@@ -65,9 +65,9 @@
     </div>
 {% endif %}
 
-{% if template contains 'cart'%}
+{% if template contains 'cart' %}
     <script>
-        window.pdtAddOn = {{cart | json}};
+        window.pdtAddOn = {{ cart | json }};
 
         window.pdtAddonUpdate = function(cart_obj) {
             let price_array = cart_obj.items.map(item => { return ( Math.round ( ( ( item.properties._addon_price * item.quantity + ( item.final_line_price / 100 ) ) + Number.EPSILON ) * 100 ) / 100 )})
@@ -130,11 +130,13 @@
 {% endif %}
 
 {% schema %}
-  {
-    "name": "Product Addons Block",
-    "target": "body",
-    "stylesheet": "theme-extension.css",
-    "javascript": "theme-extension.js",
-    "settings": []
-  }
+{
+  "name": "Product Addons Block",
+  "target": "body",
+  "stylesheet": "theme-extension.css",
+  "javascript": "theme-extension.js",
+  "settings": [
+
+  ]
+}
 {% endschema %}
