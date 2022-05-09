@@ -16,7 +16,10 @@ export default async function draft_checkout( query_variable, access_token) {
         }
       }
     `
-    const variables = {"input": {"lineItems":[{"variantId":"gid://shopify/ProductVariant/42727560249603","quantity":2,"customAttributes":[{"key":"u_key","value":"42727560249603"},{"key":"ice cream","value":"20.00"},{"key":"panner","value":"20.00"},{"key":"_addon_price","value":"40"},{"key":"_addon_titles","value":"ice cream,panner"}]},{"title":"ice cream","quantity":2,"originalUnitPrice":"20.00"},{"title":"panner","quantity":2,"originalUnitPrice":"20.00"}]}}
+    // const variables = {"input": {"lineItems":[{"variantId":"gid://shopify/ProductVariant/42727560249603","quantity":2,"customAttributes":[{"key":"u_key","value":"42727560249603"},{"key":"ice cream","value":"20.00"},{"key":"panner","value":"20.00"},{"key":"_addon_price","value":"40"},{"key":"_addon_titles","value":"ice cream,panner"}]},{"title":"ice cream","quantity":2,"originalUnitPrice":"20.00"},{"title":"panner","quantity":2,"originalUnitPrice":"20.00"}]}}
+    const variables = { input: JSON.parse(query_variable) }
+    console.log("variables", variables)
+
 
     let checkout_response = await fetch('https://simplecheckoutstore.myshopify.com/admin/api/2022-04/graphql.json', {
         method: 'post',

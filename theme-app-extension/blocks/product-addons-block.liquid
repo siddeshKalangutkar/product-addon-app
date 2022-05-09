@@ -117,14 +117,15 @@
                 }
                 data.push({ variantId : "gid://shopify/ProductVariant/"+item.variant_id, quantity : item.quantity, customAttributes: item_properties })
                 let addon_array = item.properties._addon_titles.split(",");
-                addon_array.forEach( add_on => data.push({title: add_on, quantity: item.quantity, originalUnitPrice: item.properties[add_on] }))
+                addon_array.forEach( add_on => !(add_on === "") ? data.push({title: add_on, quantity: item.quantity, originalUnitPrice: item.properties[add_on] }):"")
             } )
             let data_format = {
                 lineItems: data
             }
+            console.log("data json", data_format)
             //let data_string = JSON.stringify(data_format).replace(/"/gi,'\\"')
             let data_string = JSON.stringify(data_format)
-            console.log(data_string)
+            console.log("data string", data_string)
 
             //make api call
             var requestOptions = {
