@@ -21,7 +21,7 @@
 }
 .addon-modal {
     width: 90%;
-    max-width: 500px;
+    max-width: 330px;
 }
 .addon-modal-body{
     display: flex;
@@ -37,6 +37,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+.addon-rule-item.name{
+  font-weight: bold;
 }
 .active .addon-modal-overlay, .active .addon-modal{
     display: block !important;
@@ -88,4 +91,31 @@
     background-color: #ffffff;
     color:#121212;
   }
+}
+
+.addon-modal-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0px 20px;
+  position: relative;
+  margin: 20px 0px;
+}
+.addon-modal-header .close-btn {
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.addon-modal-header .close-btn .line {
+  width: 100%;
+  height: 2px;
+  background-color: #121212;
+  display: block;
+  transform: rotate(45deg);
+  position: absolute;
+}
+.addon-modal-header .close-btn .line:nth-child(2){
+  transform: rotate(-45deg);
 }
