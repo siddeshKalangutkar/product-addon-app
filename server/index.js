@@ -15,6 +15,7 @@ const PORT = parseInt(process.env.PORT || "8081", 10);
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
 import cors from "cors";
+import draft_checkout from "./api/draftOrder.js";
 
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
@@ -95,9 +96,10 @@ export async function createServer(
     next();
   });
 
-  app.get("/api/checkout", cors(), async (req, res) => {
-    console.log("shop",Shopify.Context.SESSION_STORAGE)
-    res.send(`Checkout passed`)
+  app.post("/api/checkout", cors(), async (req, res) => {
+    // console.log("shop",Shopify.Context.SESSION_STORAGE)
+    let url_data = await draft_checkout(req.body.data, Shopify.Context.SESSION_STORAGE.sessions["simplecheckoutstore.myshopify.com_82922963203"].accessToken)
+    res.json({url : url_data})
     console.log('checkout called')
   });
 

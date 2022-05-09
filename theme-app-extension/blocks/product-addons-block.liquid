@@ -125,6 +125,19 @@
             //let data_string = JSON.stringify(data_format).replace(/"/gi,'\\"')
             let data_string = JSON.stringify(data_format)
             console.log(data_string)
+
+            //make api call
+            var requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ data: data_string, shop: window.location.origin }),
+                redirect: 'follow'
+              };
+            fetch('https://8cbc-206-84-237-27.ngrok.io/api/checkout', requestOptions)
+            .then( res => res.json() )
+            .then( data => window.location.href = data.url )
         }
     </script>
 {% endif %}

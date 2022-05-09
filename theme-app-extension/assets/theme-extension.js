@@ -18,7 +18,7 @@ function add_products() {
     // let addon_ids = addon_checkboxes_array.map(checkbox => checkbox.value);  //selected addons id
     // let unique_key = product_id + "" + addon_ids.join("") //unique key for line item relation
     // let product_data = addon_ids.map(addon_id => { return { id: addon_id, quantity: product_quantity, properties: { u_key: unique_key } } })  //data for cart w/o main product
-    
+
     let unique_key = product_id;
     let product_data = [];
 
@@ -27,15 +27,15 @@ function add_products() {
     let product_data_obj = { id: product_id, quantity: product_quantity, properties: { u_key: unique_key } }
     let addon_total_price = 0;
     let addon_titles = [];
-    addon_info_array.forEach( addon_info => {
+    addon_info_array.forEach(addon_info => {
         product_data_obj.properties[addon_info.title] = addon_info.price
         addon_total_price += parseInt(addon_info.price)
         addon_titles.push(addon_info.title)
-    } )
+    })
     product_data_obj.properties["_addon_price"] = addon_total_price  //addon total price in line-item property
     product_data_obj.properties["_addon_titles"] = addon_titles.toString();  //addon titles in line-item properties
     console.log('single product data', product_data_obj)
-    
+
     product_data.push(product_data_obj)  //data for cart w/ main product
     let data = { items: product_data }  //data format
 
