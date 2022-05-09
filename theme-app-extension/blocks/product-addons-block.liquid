@@ -2,6 +2,12 @@
     <div id="product_addon_app">
         <div class="addon-modal-overlay"></div>
         <div class="addon-modal">
+            <div class="addon-modal-header">
+                <div class="close-btn">
+                    <div class="line"></div>
+                    <div class="line" style="transform: rotate(-45deg);"></div>
+                </div>
+            </div>
             <div class="addon-modal-body">
                 {% comment %}
                 {% assign meta_string =  product.metafields.app_meta | json | replace: '"', '' | replace: '{','' | replace: "}" , "" %}
@@ -44,12 +50,6 @@
 
                 {% endfor %}
                 {% endcomment %}
-                <div class="addon-modal-header">
-                    <div class="close-btn">
-                        <div class="line"></div>
-                        <div class="line" style="transform: rotate(-45deg);"></div>
-                    </div>
-                </div>
                 {% assign meta_string =  product.metafields.app_meta %}
                 {% for meta in meta_string %}
                 <p class="addon-rule-title">{{ meta.first }}</p>
