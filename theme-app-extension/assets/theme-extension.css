@@ -44,3 +44,48 @@
 .addon-atc{
     margin: 30px auto 0;
 }
+
+.addon-modal {
+    border-radius: 10px;
+    box-shadow: 9px 8px 13px 0px rgba(0, 0, 0, 0.2);
+}
+.addon-modal .addon-atc {
+    background-color: #121212;
+    color: #ffffff;
+    padding: 15px 20px;
+    min-width: 50%;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+  	border:2px solid #121212;
+      font-weight:500;
+      margin-bottom: 16px;
+  	transition:background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+.addon-modal input[type=checkbox]{
+    height: 16px;
+    width: 16px;
+  	margin-left: 15px;
+  }
+.addon-modal .addon-rule-item span{
+    display: flex;
+    justify-content: space-between;
+    align-items: center
+  }
+.addon-modal .addon-rule-title {
+    background-color: #f2f2f2;
+    padding: 10px 15px;
+    border-radius: 10px;
+  	font-size: 16px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+  .addon-modal .addon-rule-item .name{
+    font-weight:bold;
+  }
+@media(min-width:769px){
+  .addon-modal .addon-atc:hover{
+    background-color: #ffffff;
+    color:#121212;
+  }
+}

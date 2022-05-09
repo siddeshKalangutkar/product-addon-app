@@ -58,3 +58,13 @@ function add_products() {
         console.error('error in adding products to cart', err)
     });
 }
+
+/* close modal */
+const modalOverlay = document.querySelector('.addon-modal-overlay');
+modalOverlay.addEventListener('click', function(){
+  toggleModal();
+});
+
+function toggleModal() {
+   document.querySelector('#product_addon_app').classList.remove("active");
+}
