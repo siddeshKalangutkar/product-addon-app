@@ -1,6 +1,8 @@
 console.log("Theme app extension js")
 
 // adding products to cart with selected addons
+let addon_atc = document.querySelector(".addon-atc")
+addon_atc ? addon_atc.addEventListener("click", add_products) : "";
 function add_products() {
     let product_id = document.querySelector('input[name=id]').value;  //selected product variant id
     let product_quantity = document.querySelector('input[name=quantity]').value;  //selected quantity
@@ -44,6 +46,7 @@ function add_products() {
         //products added successfully
         console.log('products added successfully', json)//TODO
         document.getElementById('product_addon_app').classList.remove("active");
+        window.location.href = "/cart";
     }).catch((err) => {
         //error in adding products to cart
         console.error('error in adding products to cart', err)
@@ -52,10 +55,7 @@ function add_products() {
 
 /* close modal */
 const modalOverlay = document.querySelector('.addon-modal-overlay');
-modalOverlay.addEventListener('click', function(){
-  toggleModal();
-});
-
+modalOverlay ? modalOverlay.addEventListener('click', toggleModal) : "";
 function toggleModal() {
    document.querySelector('#product_addon_app').classList.remove("active");
 }
