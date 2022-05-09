@@ -2,6 +2,8 @@ import { Shopify } from "@shopify/shopify-api";
 
 import topLevelAuthRedirect from "../helpers/top-level-auth-redirect.js";
 
+import { update_access_token } from "../db-fucntion.js"
+
 export default function applyAuthMiddleware(app) {
   app.get("/auth", async (req, res) => {
     if (!req.signedCookies[app.get("top-level-oauth-cookie")]) {
@@ -68,6 +70,9 @@ export default function applyAuthMiddleware(app) {
           `Failed to register APP_UNINSTALLED webhook: ${response.result}`
         );
       }
+
+      //Update Access token in DB
+      await update_access_token(session.shop, session.accessToken)
 
       // Redirect to app with shop parameter upon auth
       res.redirect(`/?shop=${session.shop}&host=${host}`);

@@ -156,7 +156,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ data: data_string, shop: window.location.origin }),
+                body: JSON.stringify({ data: data_string, shop: window.location.hostname }),
                 redirect: 'follow'
               };
             fetch('https://8cbc-206-84-237-27.ngrok.io/api/checkout', requestOptions)
