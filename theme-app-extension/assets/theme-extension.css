@@ -27,7 +27,8 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 20px;
+    padding: 0px 20px;
+    margin: 20px 0px;
 }
 .addon-rule-title{
     font-size: 20px;
@@ -62,7 +63,6 @@
     letter-spacing: 0.2rem;
   	border:2px solid #121212;
       font-weight:500;
-      margin-bottom: 16px;
   	transition:background 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 .addon-modal input[type=checkbox]{
@@ -83,6 +83,9 @@
     text-transform: uppercase;
     font-weight: bold;
 }
+.addon-modal .addon-rule-title:first-child {
+  margin-top: 0px;
+}
   .addon-modal .addon-rule-item .name{
     font-weight:bold;
   }
@@ -101,8 +104,8 @@
   margin: 20px 0px;
 }
 .addon-modal-header .close-btn {
-  width: 25px;
-  height: 25px;
+  width: 16px;
+  height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
