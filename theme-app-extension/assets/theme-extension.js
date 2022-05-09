@@ -55,7 +55,9 @@ function add_products() {
 
 /* close modal */
 const modalOverlay = document.querySelector('.addon-modal-overlay');
+const closeBtn = document.querySelector('.close-btn');
 modalOverlay ? modalOverlay.addEventListener('click', toggleModal) : "";
+closeBtn ? closeBtn.addEventListener('click', toggleModal) : "";
 function toggleModal() {
    document.querySelector('#product_addon_app').classList.remove("active");
 }
