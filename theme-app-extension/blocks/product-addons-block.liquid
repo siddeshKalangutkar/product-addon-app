@@ -63,6 +63,18 @@
             </div>
         </div>
     </div>
+    <script>
+        // adding event on ATC button on product page
+        let submt = document.querySelector('[type=submit]');
+        submt.addEventListener("click", function (event) {
+            event.preventDefault();
+            document.getElementById('product_addon_app').classList.add("active")
+        })
+
+        // adding products to cart with selected addons
+        let addon_atc = document.querySelector(".addon-atc")
+        addon_atc.addEventListener("click", add_products)
+    </script>
 {% endif %}
 
 {% if template contains 'cart' %}
@@ -104,6 +116,13 @@
               return output;
             }
         }(window, window.fetch))
+
+        // adding event on checkout button on cart page
+        let submt = document.querySelector('[type=submit]');
+        submt.addEventListener("click", function (event) {
+            event.preventDefault();
+            checkout();
+        })
 
         //TODO
         async function checkout(){

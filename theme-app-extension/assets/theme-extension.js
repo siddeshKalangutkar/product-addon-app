@@ -1,15 +1,6 @@
 console.log("Theme app extension js")
 
-// adding event on ATC button on product page
-let submt = document.querySelector('[type=submit]');
-submt.addEventListener("click", function (event) {
-    event.preventDefault();
-    document.getElementById('product_addon_app').classList.add("active")
-})
-
 // adding products to cart with selected addons
-let addon_atc = document.querySelector(".addon-atc")
-addon_atc.addEventListener("click", add_products)
 function add_products() {
     let product_id = document.querySelector('input[name=id]').value;  //selected product variant id
     let product_quantity = document.querySelector('input[name=quantity]').value;  //selected quantity
@@ -24,7 +15,7 @@ function add_products() {
 
     let addon_info_array = addon_checkboxes_array.map(checkbox => { return { price: checkbox.getAttribute('data-addon-price'), title: checkbox.getAttribute('data-addon-title') } });  //addon price and title
     console.log('info_array', addon_info_array)
-    let product_data_obj = { id: product_id, quantity: product_quantity, properties: { u_key: unique_key } }
+    let product_data_obj = { id: product_id, quantity: product_quantity, properties: { _u_key: unique_key } }
     let addon_total_price = 0;
     let addon_titles = [];
     addon_info_array.forEach(addon_info => {
