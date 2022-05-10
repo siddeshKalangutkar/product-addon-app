@@ -192,18 +192,18 @@
 }
 
 /* cart checkout */
-
-.cart__ctas{
-  position: relative;
-}
-.cart__ctas .loading-overlay {
+.loading-spinner .loading-overlay {
   left: 50%;
   top: calc(50% - 10px);
   margin-top: 0px !important;
 }
-.cart__ctas .loading-overlay .loading-overlay__spinner svg .path{
+.loading-spinner .loading-overlay .loading-overlay__spinner svg .path{
   stroke: #fff;
 }
 .loading-spinner .cart__checkout-button{
   font-size: 0px;
+}
+.loading-spinner{
+  position: relative;
+  font-size: 0;
 }
