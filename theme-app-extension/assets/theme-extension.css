@@ -42,7 +42,7 @@
     display: block !important;
 }
 .addon-atc{
-    margin: 30px auto 0;
+  margin: 10px auto 10px;
 }
 
 .addon-modal {
@@ -53,12 +53,12 @@
     background-color: #121212;
     color: #ffffff;
     padding: 15px 20px;
-    min-width: 50%;
+    min-width: 100%;
     font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.2rem;
   	border:2px solid #121212;
-      font-weight:500;
+    font-weight:500;
   	transition:background 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 .addon-modal input[type=checkbox]{
