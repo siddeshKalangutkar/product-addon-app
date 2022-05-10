@@ -198,7 +198,8 @@
 }
 .cart__ctas .loading-overlay {
   left: 50%;
-  top: calc(50% - 6px);
+  top: calc(50% - 10px);
+  margin-top: 0px !important;
 }
 .cart__ctas .loading-overlay .loading-overlay__spinner svg .path{
   stroke: #fff;
