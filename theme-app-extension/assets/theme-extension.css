@@ -30,10 +30,6 @@
     padding: 0px 20px;
     margin: 20px 0px;
 }
-.addon-rule-title{
-    font-size: 20px;
-    font-weight: 700;
-}
 .addon-rule-item{
     display: flex;
     justify-content: space-between;
@@ -66,10 +62,12 @@
   	transition:background 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 .addon-modal input[type=checkbox]{
-    height: 16px;
-    width: 16px;
-  	margin-left: 15px;
-  }
+    height: 25px;
+    width: 25px;
+    margin: 0px;
+    left: 0;
+  	z-index:2;
+}
 .addon-modal .addon-rule-item span{
     display: flex;
     justify-content: space-between;
@@ -82,6 +80,9 @@
   	font-size: 16px;
     text-transform: uppercase;
     font-weight: bold;
+    margin-top: 0px;
+    font-size: 20px;
+    font-weight: 700;
 }
 .addon-modal .addon-rule-title:first-child {
   margin-top: 0px;
@@ -121,4 +122,70 @@
 }
 .addon-modal-header .close-btn .line:nth-child(2){
   transform: rotate(-45deg);
+}
+
+.addon-checkbox {
+  display: block;
+  position: relative;
+  padding-left: 25px;
+  margin-left: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  height: 25px;
+  z-index:1;
+}
+
+.addon-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.addon-ctm-checkbox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+}
+
+.addon-checkbox:hover input ~ .addon-ctm-checkbox {
+  background-color: #ccc;
+}
+
+.addon-checkbox input:checked ~ .addon-ctm-checkbox {
+  background-color: #121212;
+}
+
+.addon-ctm-checkbox:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.addon-checkbox input:checked ~ .addon-ctm-checkbox:after {
+  display: block;
+}
+
+.addon-checkbox .addon-ctm-checkbox:after {
+  left: 9px;
+  top: 5px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.addon-modal .addon-rule-container:not(:last-child){
+  	margin-bottom: 20px;
 }

@@ -50,23 +50,24 @@
 
                 {% endfor %}
                 {% endcomment %}
-                {% assign meta_string =  product.metafields.app_meta %}
-                {% for meta in meta_string %}
-                <p class="addon-rule-title">{{ meta.first }}</p>
-                {% for meta_items in meta.last.value %}
-                <span class="addon-rule-item">
-                    <span class="name">{{ meta_items.first }}</span>
-                    <span class="price">
-                    (+{{ meta_items.last | times: 100.00 | money }})
-                    <div class="addon-checkbox">
-                        <input type="checkbox" class="addon-input" value="{{ meta_items.first }}" data-addon-title="{{ meta_items.first }}" data-addon-price="{{ meta_items.last | times: 100.00 | money_without_currency }}">
-                        <span class="addon-ctm-checkbox"></span>
-                    </div>
+                <div class="addon-rule-container">
+                    {% assign meta_string =  product.metafields.app_meta %}
+                    {% for meta in meta_string %}
+                    <p class="addon-rule-title">{{ meta.first }}</p>
+                    {% for meta_items in meta.last.value %}
+                    <span class="addon-rule-item">
+                        <span class="name">{{ meta_items.first }}</span>
+                        <span class="price">
+                        (+{{ meta_items.last | times: 100.00 | money }})
+                        <div class="addon-checkbox">
+                            <input type="checkbox" class="addon-input" value="{{ meta_items.first }}" data-addon-title="{{ meta_items.first }}" data-addon-price="{{ meta_items.last | times: 100.00 | money_without_currency }}">
+                            <span class="addon-ctm-checkbox"></span>
+                        </div>
+                        </span>
                     </span>
-                </span>
-                {% endfor %}
-                {% endfor %}
-
+                    {% endfor %}
+                    {% endfor %}
+                </div>
                 <button class="addon-atc">Add To Cart</button>
             </div>
         </div>
