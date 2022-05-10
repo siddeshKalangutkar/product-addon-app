@@ -89,19 +89,19 @@
         window.pdtAddonUpdate = function(cart_obj) {
             let price_array = cart_obj.items.map(item => { return ( Math.round ( ( ( item.properties._addon_price * item.quantity + ( item.final_line_price / 100 ) ) + Number.EPSILON ) * 100 ) / 100 )})
             let total_cart_price = price_array.reduce((a, b) => a + b, 0)
-            {%- if block.settings.total_price_selector != blank -%}
+            {% if block.settings.total_price_selector != blank %}
             let total_price_element = document.querySelector('{{ block.settings.total_price_selector }}')
-            {%- endif -%}
+            {% endif %}
             total_price_element.innerHTML = "{{ 0 | money_with_currency | money_without_trailing_zeros | remove: '0' }}" + total_cart_price;
-            {%- if block.settings.cart_item_selector != blank -%}
+            {% if block.settings.cart_item_selector != blank %}
             let cart_item_list = document.querySelectorAll('{{ block.settings.cart_item_selector }}')
-            {%- endif -%}
+            {% endif %}
             let cart_items = [...cart_item_list]
             for(i=0 ; i < cart_items.length ; i++ ){
                 if (price_array[i]){
-                    {%- if block.settings.end_price_selector != blank -%}
+                    {% if block.settings.end_price_selector != blank %}
                     let price_element_list = cart_items[i].querySelectorAll('{{ block.settings.end_price_selector }}')
-                    {%- endif -%}
+                    {% endif %}
                     let price_elements = [...price_element_list]
                     for(j = 0 ; j < price_elements.length ; j++ ){
                         price_elements[j].innerHTML = "{{ 0 | money_with_currency | money_without_trailing_zeros | remove: '0' }} " + price_array[i];
