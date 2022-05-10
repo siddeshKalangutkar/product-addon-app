@@ -147,19 +147,28 @@
             add_spinner_html();
 
             let cart_data_response = await fetch('/cart.js')
-            let {items} = await cart_data_response.json()
+            let {items, cart_level_discount_applications} = await cart_data_response.json()
             let data = [];
             let draft_line_items = items.map( item => {
                 let item_properties = []
                 for (const key in item.properties) {
                     item_properties.push({key: key , value : ""+item.properties[key]})
                 }
-                data.push({ variantId : "gid://shopify/ProductVariant/"+item.variant_id, quantity : item.quantity, customAttributes: item_properties })
+                let item_data = { variantId : "gid://shopify/ProductVariant/"+item.variant_id, quantity : item.quantity, customAttributes: item_properties }
+                if (item.discounts.length > 0){
+                    item_data['appliedDiscount'] = { title: item.discounts[0].title, valueType: "FIXED_AMOUNT", value: (item.discounts[0].amount / (100 * item.quantity))}
+                }
+                data.push(item_data)
                 let addon_array = item.properties._addon_titles.split(",");
                 addon_array.forEach( add_on => !(add_on === "") ? data.push({title: add_on, quantity: item.quantity, originalUnitPrice: item.properties[add_on] }):"")
             } )
             let data_format = {
                 lineItems: data
+            }
+            if (cart_level_discount_applications.length > 1){
+                cart_level_discount_applications.each( discount => {
+                    data_format["appliedDiscount"] = {title : discount.title, valueType: discount.value_type.toUpperCase(), value: parseFloat(discount.value)}
+                })
             }
             console.log("data json", data_format)
             //let data_string = JSON.stringify(data_format).replace(/"/gi,'\\"')
