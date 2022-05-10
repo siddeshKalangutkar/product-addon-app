@@ -2,6 +2,9 @@ import React, { useState, useCallback } from "react";
 import { FormLayout, TextField, ChoiceList, Button, Stack, Tag } from "@shopify/polaris";
 import { ResourcePicker } from "@shopify/app-bridge-react";
 
+import { AddonList } from "./AddonList";
+import { AddonInput } from "./AddonInput";
+
 export function RuleForm() {
     const [value, setValue] = useState('');
     const handleChange = useCallback((newValue) => setValue(newValue), []);
@@ -59,7 +62,7 @@ export function RuleForm() {
     const [openProductPicker, setOpenProductPicker] = useState(false);
     const handleProductPicker = useCallback((value) => {
         setOpenProductPicker(false)
-        console.log("Productpicker",value)
+        console.log("Productpicker", value)
         setSelectProducts(value.selection.map(product => product.title))
     }, []);
 
@@ -67,9 +70,22 @@ export function RuleForm() {
         <FormLayout>
             <FormLayout>
                 <TextField label="Rule Title" value={value} onChange={handleChange} />
-                {selectProducts.length > 0 ? (<Stack spacing="tight">{selectProductsTag}</Stack>) : (<Button onClick={setOpenProductPicker} >Select Products</Button>)}
+                <p>Add rule for:</p>
+                <Button onClick={setOpenProductPicker} >Select Products</Button>
+                <Stack spacing="tight">{selectProductsTag}</Stack>
+                <ResourcePicker
+                    resourceType="Product"
+                    showVariants={true}
+                    open={openProductPicker}
+                    onSelection={(resources) => handleProductPicker(resources)}
+                    onCancel={() => setOpenProductPicker(false)}
+                    key="productPicker"
+                />
+                <AddonInput/>
+                <AddonList/>
+                {/* {selectProducts.length > 0 ? (<Stack spacing="tight">{selectProductsTag}</Stack>) : (<Button onClick={setOpenProductPicker} >Select Products</Button>)} */}
 
-                <ChoiceList
+                {/* <ChoiceList
                     title="Add rule for:"
                     choices={[
                         { label: 'product', value: 'product', renderChildren },
@@ -78,8 +94,8 @@ export function RuleForm() {
                     selected={selectedChoice}
                     onChange={handleChoiceListChange}
                 />
-                <Stack spacing="tight">{tagMarkup}</Stack>
-                {
+                <Stack spacing="tight">{tagMarkup}</Stack> */}
+                {/* {
                     selectProducts.length > 0 ?
                         (<ResourcePicker
                             resourceType="Product"
@@ -97,7 +113,7 @@ export function RuleForm() {
                             onCancel={() => setOpenProductPicker(false)}
                             key="productPicker"
                         />)
-                }
+                } */}
             </FormLayout>
         </FormLayout>
     );
