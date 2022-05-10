@@ -89,18 +89,18 @@
         window.pdtAddonUpdate = function(cart_obj) {
             let price_array = cart_obj.items.map(item => { return ( Math.round ( ( ( item.properties._addon_price * item.quantity + ( item.final_line_price / 100 ) ) + Number.EPSILON ) * 100 ) / 100 )})
             let total_cart_price = price_array.reduce((a, b) => a + b, 0)
-            {%- if section.settings.total_price_selector != blank -%}
-            let total_price_element = document.querySelector('{{ section.settings.total_price_selector }}')
+            {%- if block.settings.total_price_selector != blank -%}
+            let total_price_element = document.querySelector('{{ block.settings.total_price_selector }}')
             {%- endif -%}
             total_price_element.innerHTML = "{{ 0 | money_with_currency | money_without_trailing_zeros | remove: '0' }}" + total_cart_price;
-            {%- if section.settings.cart_item_selector != blank -%}
-            let cart_item_list = document.querySelectorAll('{{ section.settings.cart_item_selector }}')
+            {%- if block.settings.cart_item_selector != blank -%}
+            let cart_item_list = document.querySelectorAll('{{ block.settings.cart_item_selector }}')
             {%- endif -%}
             let cart_items = [...cart_item_list]
             for(i=0 ; i < cart_items.length ; i++ ){
                 if (price_array[i]){
-                    {%- if section.settings.end_price_selector != blank -%}
-                    let price_element_list = cart_items[i].querySelectorAll('{{ section.settings.end_price_selector }}')
+                    {%- if block.settings.end_price_selector != blank -%}
+                    let price_element_list = cart_items[i].querySelectorAll('{{ block.settings.end_price_selector }}')
                     {%- endif -%}
                     let price_elements = [...price_element_list]
                     for(j = 0 ; j < price_elements.length ; j++ ){
@@ -183,16 +183,19 @@
     {
         "type": "text",
         "id": "cart_item_selector",
+        "default":".cart-item",
         "label": "Cart Item Selector"
     },
     {
         "type": "text",
         "id": "total_price_selector",
+        "default":".totals__subtotal-value",
         "label": "Total Price Selector"
     },
     {
         "type": "text",
         "id": "end_price_selector",
+        "default":".price.price--end",
         "label": "Subtotal Price Selector"
     }
   ]
