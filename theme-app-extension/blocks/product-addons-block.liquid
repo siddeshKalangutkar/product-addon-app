@@ -160,7 +160,7 @@
                 body: JSON.stringify({ data: data_string, shop: window.location.hostname }),
                 redirect: 'follow'
               };
-            fetch('https://8cbc-206-84-237-27.ngrok.io/api/checkout', requestOptions)
+            fetch('https://bc23-206-84-237-27.ngrok.io/api/checkout', requestOptions)
             .then( res => res.json() )
             .then( data => window.location.href = data.url )
         }
