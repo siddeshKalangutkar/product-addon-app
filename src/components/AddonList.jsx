@@ -2,10 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, ResourceItem, ResourceList, Stack, TextStyle } from '@shopify/polaris';
 
 export function AddonList() {
-    const [addonData, setAddonData] = useState({
-        'Addon Title 1': 30,
-        'Addon Title 2': 40
-    })
+    const [addonData, setAddonData] = useState({})
     const [addonArray, setAddonArray] = useState([])
 
     useEffect(() => {

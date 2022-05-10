@@ -57,7 +57,7 @@ export function Dashboard() {
                         onClose={toggleActive}
                         title="Rule"
                         primaryAction={{
-                            content: 'Add',
+                            content: 'Save',
                             onAction: toggleActive,
                         }}
                         secondaryActions={[
