@@ -190,3 +190,16 @@
 .addon-modal .addon-rule-container:not(:last-child){
   	margin-bottom: 20px;
 }
+
+/* cart checkout */
+
+.cart__ctas{
+  position: relative;
+}
+.cart__ctas .loading-overlay {
+  left: 50%;
+  top: calc(50% - 6px);
+}
+.cart__ctas .loading-overlay .loading-overlay__spinner svg .path{
+  stroke: #fff;
+}
