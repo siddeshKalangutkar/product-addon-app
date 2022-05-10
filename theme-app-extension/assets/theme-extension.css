@@ -203,3 +203,6 @@
 .cart__ctas .loading-overlay .loading-overlay__spinner svg .path{
   stroke: #fff;
 }
+.loading-spinner .cart__checkout-button{
+  font-size: 0px;
+}
