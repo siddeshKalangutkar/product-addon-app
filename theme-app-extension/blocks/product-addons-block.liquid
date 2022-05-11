@@ -14,40 +14,48 @@
                 {% assign meta_field_string = meta_string | split: "," %}
                 {% for meta_item in meta_field_string %}
                     {% assign meta_item_value = meta_item | split: ":" %}
-                    <p class="addon-rule-title">{{meta_item_value[0]}}</p>
+                    <div class="addon-rule-container">
+                        <p class="addon-rule-title">{{meta_item_value[0]}}</p>
 
-                    {% if meta_item_value[1] contains "collections" %}
-                        {% assign collection_handle_array = meta_item_value[1] | replace: "[" , "" | replace: "]" , "" | split: "|" %}
-                        {% assign collection_handles = collection_handle_array[1] | split: ";" %}
-                        {% for handle in collection_handles %}
-                            {% assign handle_format = handle | strip %}
-                            {% for addon_product in collections[handle_format].products %}
-                            <span class="addon-rule-item">
-                                {{addon_product.title}}
-                                <span>
-                                    (+{{addon_product.selected_or_first_available_variant.price | money}})
-                                    <input type="checkbox" class="addon-input" value="{{addon_product.selected_or_first_available_variant.id}}" data-addon-title="{{addon_product.title}}" data-addon-price="{{addon_product.selected_or_first_available_variant.price | money_without_currency }}">
-                                </span>
-                            </span>
-                            {% endfor %}
-                        {% endfor %}
-                    {% endif %}
-
-                    {% if meta_item_value[1] contains "products" %}
-                        {% assign product_handle_array = meta_item_value[1] | replace: "[" , "" | replace: "]" , "" | split: "|" %}
-                          {% assign product_handles = product_handle_array[1] | split: ";" %}
-                              {% for handle in product_handles %}
+                        {% if meta_item_value[1] contains "collections" %}
+                            {% assign collection_handle_array = meta_item_value[1] | replace: "[" , "" | replace: "]" , "" | split: "|" %}
+                            {% assign collection_handles = collection_handle_array[1] | split: ";" %}
+                            {% for handle in collection_handles %}
                                 {% assign handle_format = handle | strip %}
+                                {% for addon_product in collections[handle_format].products %}
                                 <span class="addon-rule-item">
-                                    {{all_products[handle_format].title}}
-                                    <span>
-                                        (+{{all_products[handle_format].selected_or_first_available_variant.price | money}})
-                                        <input type="checkbox" class="addon-input" value="{{all_products[handle_format].selected_or_first_available_variant.id}}" data-addon-title="{{all_products[handle_format].title}}" data-addon-price="{{all_products[handle_format].selected_or_first_available_variant.price | money_without_currency }}">
+                                    <span class="name">{{addon_product.title}}</span>
+                                    <span class="price">
+                                        (+{{addon_product.selected_or_first_available_variant.price | money}})
+                                        <div class="addon-checkbox">
+                                            <input type="checkbox" class="addon-input" value="{{addon_product.selected_or_first_available_variant.id}}" data-addon-title="{{addon_product.title}}" data-addon-price="{{addon_product.selected_or_first_available_variant.price | money_without_currency }}">
+                                            <span class="addon-ctm-checkbox"></span>
+                                        </div>
                                     </span>
                                 </span>
-                              {% endfor %}
-                    {% endif%}
+                                {% endfor %}
+                            {% endfor %}
+                        {% endif %}
 
+                        {% if meta_item_value[1] contains "products" %}
+                            {% assign product_handle_array = meta_item_value[1] | replace: "[" , "" | replace: "]" , "" | split: "|" %}
+                            {% assign product_handles = product_handle_array[1] | split: ";" %}
+                                {% for handle in product_handles %}
+                                    {% assign handle_format = handle | strip %}
+                                    <span class="addon-rule-item">
+                                        <span class="name">{{all_products[handle_format].title}}</span>
+                                        <span class="price">
+                                            (+{{all_products[handle_format].selected_or_first_available_variant.price | money}})
+                                            <div class="addon-checkbox">
+                                                <input type="checkbox" class="addon-input" value="{{all_products[handle_format].selected_or_first_available_variant.id}}" data-addon-title="{{all_products[handle_format].title}}" data-addon-price="{{all_products[handle_format].selected_or_first_available_variant.price | money_without_currency }}">
+                                                <span class="addon-ctm-checkbox"></span>
+                                            </div>
+                                        </span>
+                                    </span>
+                                {% endfor %}
+                        {% endif%}
+
+                    </div>
                 {% endfor %}
 
                 {% comment %}
