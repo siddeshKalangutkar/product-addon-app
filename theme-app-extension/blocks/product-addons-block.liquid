@@ -83,14 +83,16 @@
             </div>
         </div>
     </div>
-    <script>
-        // adding event on ATC button on product page
-        let submt = document.querySelector('[type=submit]');
-        submt.addEventListener("click", function (event) {
-            event.preventDefault();
-            document.getElementById('product_addon_app').classList.add("active")
-        })
-    </script>
+    {% if product.metafields.app_meta != blank %}
+        <script>
+            // adding event on ATC button on product page
+            let submt = document.querySelector('[type=submit]');
+            submt.addEventListener("click", function (event) {
+                event.preventDefault();
+                document.getElementById('product_addon_app').classList.add("active")
+            })
+        </script>
+    {% endif %}
 {% endif %}
 
 {% if template contains 'cart' %}
@@ -98,7 +100,7 @@
         window.pdtAddOn = {{ cart | json }};
 
         window.pdtAddonUpdate = function(cart_obj) {
-            let price_array = cart_obj.items.map(item => { return ( Math.round ( ( ( item.properties._addon_price * item.quantity + ( item.final_line_price / 100 ) ) + Number.EPSILON ) * 100 ) / 100 )})
+            let price_array = cart_obj.items.map(item => { return item.properties?( Math.round ( ( ( item.properties._addon_price * item.quantity + ( item.final_line_price / 100 ) ) + Number.EPSILON ) * 100 ) / 100 ):NaN})
             let line_items = cart_obj.items;
             let update_url_flag = false;
             let update_url ="/cart/update?"
@@ -129,7 +131,7 @@
                     let line_item_quantity = line_items[i].quantity
                     console.log("uk", u_key)
                     console.log("quantity", line_item_quantity)
-                    let changeLineArray = line_items.filter((item)=> { return item.properties._u_key == u_key && item.quantity != line_item_quantity } ).map((item)=> item.key)
+                    let changeLineArray = line_items.filter((item)=> { return item.properties && item.properties._u_key == u_key && item.quantity != line_item_quantity } ).map((item)=> item.key)
                     console.log("changeVar", changeLineArray)
                     for (k = 0 ; k < changeLineArray.length ; k++ ){
                         update_url = update_url + "updates[" + changeLineArray[k] + "]=" + line_item_quantity + "&"
@@ -139,10 +141,12 @@
                 else{
                     //cart_items[i].style.display = "none";
                     console.log(i + ". " + "addon")
-                    let u_key = line_items[i].properties._u_key
-                    let removeLineArray = line_items.filter((item)=> { return item.properties._u_key == u_key && typeof item.properties._addon_price != 'undefined' } )
-                    console.log("Remove Array", removeLineArray)
-                    removeLineArray.length > 0 ? "" : (update_url = update_url + "updates[" + line_items[i].key + "]=" + 0 + "&", update_url_flag = true) 
+                    if(line_items[i].properties && line_items[i].properties._u_key){
+                        let u_key = line_items[i].properties._u_key
+                        let removeLineArray = line_items.filter((item)=> { return item.properties && item.properties._u_key == u_key && typeof item.properties._addon_price != 'undefined' } )
+                        console.log("Remove Array", removeLineArray)
+                        removeLineArray.length > 0 ? "" : (update_url = update_url + "updates[" + line_items[i].key + "]=" + 0 + "&", update_url_flag = true) 
+                    }
                 }
             }
             update_url_flag ? (console.log('url', update_url), window.location.href = update_url) : console.log("No items to change")
