@@ -131,6 +131,10 @@
                 else{
                     //cart_items[i].style.display = "none";
                     console.log(i + ". " + "addon")
+                    let u_key = line_items[i].properties._u_key
+                    let removeLineArray = line_items.filter((item)=> { return item.properties._u_key == u_key && typeof item.properties._addon_price != 'undefined' } )
+                    console.log("Remove Array", removeLineArray)
+                    removeLineArray.length > 0 ? "" : (update_url = update_url + "updates[" + line_items[i].key + "]=" + 0 + "&", update_url_flag = true) 
                 }
             }
             update_url_flag ? (console.log('url', update_url), window.location.href = update_url) : console.log("No items to change")
