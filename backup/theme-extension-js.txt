@@ -8,12 +8,12 @@ function add_products() {
     let product_quantity = document.querySelector('input[name=quantity]').value;  //selected quantity
     let addon_checkboxes = document.querySelectorAll('.addon-input:checked');
     let addon_checkboxes_array = [...addon_checkboxes];
-    let addon_ids = addon_checkboxes_array.map(checkbox => checkbox.value);  //selected addons id
-    let unique_key = product_id + "" + addon_ids.join("") //unique key for line item relation
-    let product_data = addon_ids.map(addon_id => { return { id: addon_id, quantity: product_quantity, properties: { _u_key: unique_key } } })  //data for cart w/o main product
+    // let addon_ids = addon_checkboxes_array.map(checkbox => checkbox.value);  //selected addons id
+    // let unique_key = product_id + "" + addon_ids.join("") //unique key for line item relation
+    // let product_data = addon_ids.map(addon_id => { return { id: addon_id, quantity: product_quantity, properties: { u_key: unique_key } } })  //data for cart w/o main product
 
-    // let unique_key = product_id;
-    // let product_data = [];
+    let unique_key = product_id;
+    let product_data = [];
 
     let addon_info_array = addon_checkboxes_array.map(checkbox => { return { price: checkbox.getAttribute('data-addon-price'), title: checkbox.getAttribute('data-addon-title') } });  //addon price and title
     console.log('info_array', addon_info_array)
