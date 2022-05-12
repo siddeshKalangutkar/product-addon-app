@@ -140,6 +140,10 @@
                 }
                 else{
                     //cart_items[i].style.display = "none";
+                    let quantity_update_btn_list = cart_items[i].querySelectorAll(".quantity, cart-remove-button");
+                    let quantity_update_btns = [...quantity_update_btn_list]
+                    quantity_update_btns.forEach(btn => btn.remove() )
+
                     console.log(i + ". " + "addon")
                     if(line_items[i].properties && line_items[i].properties._u_key){
                         let u_key = line_items[i].properties._u_key
@@ -168,8 +172,8 @@
         // adding event on checkout button on cart page
         let submt = document.querySelector('[type=submit]');
         submt.addEventListener("click", function (event) {
-            event.preventDefault();
-            checkout(this);
+            //event.preventDefault();
+            //checkout(this);
         })
 
         //TODO

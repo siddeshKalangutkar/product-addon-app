@@ -20,7 +20,7 @@ function add_products() {
     let product_data_obj = { id: product_id, quantity: product_quantity, properties: { _u_key: unique_key } }
     let addon_total_price = 0;
     let addon_titles = [];
-    addon_info_array.forEach(addon_info => {
+    addon_info_array.reverse().forEach(addon_info => {
         product_data_obj.properties[addon_info.title] = addon_info.price
         addon_total_price += parseInt(addon_info.price)
         addon_titles.push(addon_info.title)
