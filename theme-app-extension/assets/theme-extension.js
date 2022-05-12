@@ -59,5 +59,62 @@ const closeBtn = document.querySelector('.close-btn');
 modalOverlay ? modalOverlay.addEventListener('click', toggleModal) : "";
 closeBtn ? closeBtn.addEventListener('click', toggleModal) : "";
 function toggleModal() {
-   document.querySelector('#product_addon_app').classList.remove("active");
+    document.querySelector('#product_addon_app').classList.remove("active");
+}
+
+// Ajax popup
+async function render_popup(product_id) {
+    let html_section = "";
+    let x = window.pdtJSON[product_id]
+    for (let key in x) {
+        let arr = x[key].split("|")
+        console.log(arr)
+        html_section += `
+        <div class="addon-rule-container">
+        <p class="addon-rule-title">${key}</p>
+        `
+        if (arr[0].includes('collections')) {
+            console.log("collections")
+            let collection_handle = arr[1].replace(/\[|\]|\;/gi, "")
+            console.log(collection_handle)
+            let addon_products_response = await fetch(`/collections/${collection_handle.trim()}/products.json`)
+            let {products} = await addon_products_response.json()
+            for(const product of products){
+                html_section += format_html(product)
+            }
+        }
+        else {
+            console.log("products")
+            let product_handle_string = arr[1].replace(/\[|\]/gi, "")
+            let product_handles = product_handle_string.split(";")
+            for( const handle of product_handles){
+                let addon_response = await fetch(`/products/${handle.trim()}.json`)
+                let {product} = await addon_response.json()
+                html_section += format_html(product)
+            }
+        }
+        html_section += `</div>`
+    }
+    html_section += `
+    <button class="addon-atc">Add To Cart</button>
+    `
+    document.querySelector('.addon-modal-body').innerHTML = html_section;
+    document.querySelector(".addon-atc").addEventListener("click", add_products)
+    console.log(html_section)
+    document.getElementById('product_addon_app').classList.add("active")
+}
+
+function format_html(product){
+    let data_format = `
+    <span class="addon-rule-item">
+        <span class="name">${product.title}</span>
+        <span class="price">
+            (+${product.variants[0].price})
+            <div class="addon-checkbox">
+                <input type="checkbox" class="addon-input" value="${product.variants[0].id}" data-addon-title="${product.title}" data-addon-price="${product.variants[0].price}">
+                <span class="addon-ctm-checkbox"></span>
+            </div>
+        </span>
+    </span>`
+    return data_format;
 }

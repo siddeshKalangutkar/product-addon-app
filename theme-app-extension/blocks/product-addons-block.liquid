@@ -89,7 +89,8 @@
             let submt = document.querySelector('[type=submit]');
             submt.addEventListener("click", function (event) {
                 event.preventDefault();
-                document.getElementById('product_addon_app').classList.add("active")
+                render_popup({{product.id}})
+                //document.getElementById('product_addon_app').classList.add("active")
             })
         </script>
     {% endif %}
@@ -140,7 +141,7 @@
                 }
                 else{
                     //cart_items[i].style.display = "none";
-                    let quantity_update_btn_list = cart_items[i].querySelectorAll(".quantity, cart-remove-button");
+                    let quantity_update_btn_list = cart_items[i].querySelectorAll("{{block.settings.quanitity_selector}}, {{block.settings.delete_selector}}");
                     let quantity_update_btns = [...quantity_update_btn_list]
                     quantity_update_btns.forEach(btn => btn.remove() )
 
@@ -252,6 +253,18 @@
         "id": "end_price_selector",
         "default":".price.price--end",
         "label": "Subtotal Price Selector"
+    },
+    {
+        "type": "text",
+        "id": "quanitity_selector",
+        "default":".quantity",
+        "label": "Quanity Input Selector"
+    },
+    {
+        "type": "text",
+        "id": "delete_selector",
+        "default":"cart-remove-button",
+        "label": "Delete Button Selector"
     }
   ]
 }
