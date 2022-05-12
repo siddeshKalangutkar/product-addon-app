@@ -9,7 +9,7 @@
                 </div>
             </div>
             <div class="addon-modal-body">
-                
+                {% comment%}
                 {% assign meta_string =  product.metafields.app_meta | json | replace: '"', '' | replace: '{','' | replace: "}" , "" %}
                 {% assign meta_field_string = meta_string | split: "," %}
                 {% for meta_item in meta_field_string %}
@@ -57,6 +57,7 @@
 
                     </div>
                 {% endfor %}
+                {% endcomment %}
 
                 {% comment %}
                     {% assign meta_string =  product.metafields.app_meta %}
@@ -79,7 +80,9 @@
                     {% endfor %}
                 {% endcomment %}
 
+                {% comment %}
                 <button class="addon-atc">Add To Cart</button>
+                {% endcomment %}
             </div>
         </div>
     </div>
@@ -141,12 +144,12 @@
                 }
                 else{
                     //cart_items[i].style.display = "none";
-                    let quantity_update_btn_list = cart_items[i].querySelectorAll("{{block.settings.quanitity_selector}}, {{block.settings.delete_selector}}");
-                    let quantity_update_btns = [...quantity_update_btn_list]
-                    quantity_update_btns.forEach(btn => btn.remove() )
-
+                    
                     console.log(i + ". " + "addon")
                     if(line_items[i].properties && line_items[i].properties._u_key){
+                        let quantity_update_btn_list = cart_items[i].querySelectorAll("{{block.settings.quanitity_selector}}, {{block.settings.delete_selector}}");
+                        let quantity_update_btns = [...quantity_update_btn_list]
+                        quantity_update_btns.forEach(btn => btn.remove() )
                         let u_key = line_items[i].properties._u_key
                         let removeLineArray = line_items.filter((item)=> { return item.properties && item.properties._u_key == u_key && typeof item.properties._addon_price != 'undefined' } )
                         console.log("Remove Array", removeLineArray)
@@ -228,6 +231,24 @@
         }
     </script>
 {% endif %}
+
+{% capture 'pdtJSON' %}
+{
+    {% for pdt in collections.all.products %}
+        {% if pdt.metafields.app_meta != blank %}
+            "{{pdt.id}}" : {
+            {% for x in pdt.metafields.app_meta %}
+                "{{x.first}}" : "{{x.last}}",
+            {% endfor %}
+            },
+        {% endif %}
+    {% endfor %}
+}
+{% endcapture %}
+<script>
+    window.pdtAddOnCurrency = "{{ 0 | money_with_currency | money_without_trailing_zeros | remove: '0' }}";
+    window.pdtJSON = {{pdtJSON}};
+</script>
 
 {% schema %}
 {

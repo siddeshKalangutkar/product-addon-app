@@ -1,4 +1,4 @@
-console.log("Theme app extension js")
+console.log("Theme app extension js")//TODO
 
 // adding products to cart with selected addons
 let addon_atc = document.querySelector(".addon-atc")
@@ -16,7 +16,7 @@ function add_products() {
     // let product_data = [];
 
     let addon_info_array = addon_checkboxes_array.map(checkbox => { return { price: checkbox.getAttribute('data-addon-price'), title: checkbox.getAttribute('data-addon-title') } });  //addon price and title
-    console.log('info_array', addon_info_array)
+    console.log('info_array', addon_info_array)//TODO
     let product_data_obj = { id: product_id, quantity: product_quantity, properties: { _u_key: unique_key } }
     let addon_total_price = 0;
     let addon_titles = [];
@@ -27,7 +27,7 @@ function add_products() {
     })
     product_data_obj.properties["_addon_price"] = addon_total_price  //addon total price in line-item property
     product_data_obj.properties["_addon_titles"] = addon_titles.toString();  //addon titles in line-item properties
-    console.log('single product data', product_data_obj)
+    console.log('single product data', product_data_obj)//TODO
 
     product_data.push(product_data_obj)  //data for cart w/ main product
     let data = { items: product_data }  //data format
@@ -68,15 +68,13 @@ async function render_popup(product_id) {
     let x = window.pdtJSON[product_id]
     for (let key in x) {
         let arr = x[key].split("|")
-        console.log(arr)
+        console.log(arr)//TODO
         html_section += `
         <div class="addon-rule-container">
         <p class="addon-rule-title">${key}</p>
         `
         if (arr[0].includes('collections')) {
-            console.log("collections")
             let collection_handle = arr[1].replace(/\[|\]|\;/gi, "")
-            console.log(collection_handle)
             let addon_products_response = await fetch(`/collections/${collection_handle.trim()}/products.json`)
             let {products} = await addon_products_response.json()
             for(const product of products){
@@ -84,7 +82,7 @@ async function render_popup(product_id) {
             }
         }
         else {
-            console.log("products")
+            console.log("products")//TODO
             let product_handle_string = arr[1].replace(/\[|\]/gi, "")
             let product_handles = product_handle_string.split(";")
             for( const handle of product_handles){
@@ -100,16 +98,22 @@ async function render_popup(product_id) {
     `
     document.querySelector('.addon-modal-body').innerHTML = html_section;
     document.querySelector(".addon-atc").addEventListener("click", add_products)
-    console.log(html_section)
+    console.log(html_section)//TODO
     document.getElementById('product_addon_app').classList.add("active")
 }
 
 function format_html(product){
     let data_format = `
     <span class="addon-rule-item">
-        <span class="name">${product.title}</span>
+        <span class="addon-info">
+            ${product.images.length > 0 && product.images[0].src?'<img class="featured-img" src ="'+product.images[0].src+'" height="50px" width="50px" >':''}
+            <span class="addon-text-info">
+                <span class="name">${product.title}</span>
+                <span class="description">${product.body_html}</span>
+            </span>
+        </span>
         <span class="price">
-            (+${product.variants[0].price})
+            (+${window.pdtAddOnCurrency+""+product.variants[0].price})
             <div class="addon-checkbox">
                 <input type="checkbox" class="addon-input" value="${product.variants[0].id}" data-addon-title="${product.title}" data-addon-price="${product.variants[0].price}">
                 <span class="addon-ctm-checkbox"></span>

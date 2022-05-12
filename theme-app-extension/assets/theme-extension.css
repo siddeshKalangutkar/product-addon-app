@@ -21,7 +21,7 @@
 }
 .addon-modal {
     width: 90%;
-    max-width: 330px;
+    max-width: 400px;
 }
 .addon-modal-body{
     display: flex;
@@ -34,6 +34,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-bottom: 16px;
 }
 .addon-rule-item.name{
   font-weight: bold;
@@ -190,6 +191,21 @@
 .addon-modal .addon-rule-container:not(:last-child){
   	margin-bottom: 20px;
 }
+
+.addon-modal .addon-rule-item .addon-info {
+  max-width: 70%;
+  align-items: flex-start;
+}
+.addon-modal .addon-rule-item .addon-text-info {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-left: 10px;
+}
+.addon-modal .addon-rule-item .addon-text-info .desciption {
+  font-size: 14px;
+}
+
 
 /* cart checkout */
 .loading-spinner .loading-overlay {
