@@ -101,7 +101,7 @@ async function render_popup(product_id, button) {
     <button class="addon-atc">Add To Cart</button>
     `
     document.querySelector('.addon-modal-body').innerHTML = html_section;
-    document.querySelector(".addon-atc").addEventListener("click", add_products(this))
+    document.querySelector(".addon-atc").addEventListener("click", function(){ add_products(document.querySelector(".addon-atc")) , false })
     console.log(html_section)//TODO
     document.getElementById('product_addon_app').classList.add("active")
     remove_spinner(button)

@@ -92,7 +92,7 @@
             let submt = document.querySelector('[type=submit]');
             submt.addEventListener("click", function (event) {
                 event.preventDefault();
-                render_popup.bind({{product.id}}, submt)
+                render_popup({{product.id}}, submt)
                 //document.getElementById('product_addon_app').classList.add("active")
             })
         </script>
