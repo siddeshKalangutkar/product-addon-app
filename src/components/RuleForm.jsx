@@ -2,14 +2,36 @@ import React, { useState, useCallback } from "react";
 import { FormLayout, TextField, ChoiceList, Button, Stack, Tag } from "@shopify/polaris";
 import { ResourcePicker } from "@shopify/app-bridge-react";
 
-import { AddonList } from "./AddonList";
-import { AddonInput } from "./AddonInput";
+// import { AddonList } from "./AddonList";
+// import { AddonInput } from "./AddonInput";
 
 export function RuleForm() {
     const [value, setValue] = useState('');
     const handleChange = useCallback((newValue) => setValue(newValue), []);
 
+    const [value2, setValue2] = useState('');
+    const handleChange2 = useCallback((newValue) => setValue2(newValue), []);
+
+    const [selectedChoice, setSelectedChoice] = useState(['none']);
+    const handleChoiceListChange = useCallback((value) => {
+        setSelectedChoice(value)
+        setSelectedTags([])
+    }, []);
+
+    const [openResourcepicker, setOpenResourcepicker] = useState(false);
+    const handleResourcePickerSelection = useCallback((value) => {
+        setOpenResourcepicker(false)
+        setSelectedTags(value.selection.map(product => product.title))
+    }, []);
+
+    const renderChildren = useCallback((isSelected) =>
+        isSelected && (
+            <Button onClick={setOpenResourcepicker} >Add {selectedChoice}</Button>
+        ), [selectedChoice]
+    );
+
     const [selectedTags, setSelectedTags] = useState([]);
+
     const removeTag = useCallback(
         (tag) => () => {
             setSelectedTags((previousTags) =>
@@ -18,6 +40,12 @@ export function RuleForm() {
         },
         [],
     );
+
+    const tagMarkup = selectedTags.map((option) => (
+        <Tag key={option} onRemove={removeTag(option)}>
+            {option}
+        </Tag>
+    ));
 
     const [selectProducts, setSelectProducts] = useState([]);
     const removeSelectedProducts = useCallback(
@@ -48,16 +76,60 @@ export function RuleForm() {
                 <p>Add rule for:</p>
                 <Button onClick={setOpenProductPicker} >Select Products</Button>
                 <Stack spacing="tight">{selectProductsTag}</Stack>
-                <ResourcePicker
+                {/* <ResourcePicker
                     resourceType="Product"
                     showVariants={true}
                     open={openProductPicker}
                     onSelection={(resources) => handleProductPicker(resources)}
                     onCancel={() => setOpenProductPicker(false)}
                     key="productPicker"
+                /> */}
+
+                {/* <AddonInput/>
+                <AddonList/> */}
+
+                {/* {selectProducts.length > 0 ? (<Stack spacing="tight">{selectProductsTag}</Stack>) : (<Button onClick={setOpenProductPicker} >Select Products</Button>)} */}
+
+                <ChoiceList
+                    title="Select Addons for the rule:"
+                    choices={[
+                        { label: 'product', value: 'product', renderChildren },
+                        { label: 'collection', value: 'collection', renderChildren },
+                    ]}
+                    selected={selectedChoice}
+                    onChange={handleChoiceListChange}
                 />
-                <AddonInput />
-                <AddonList />
+                <Stack spacing="tight">{tagMarkup}</Stack>
+                {
+                    selectProducts.length > 0 ?
+                        selectedChoice == "collection" ?
+                        (<ResourcePicker
+                            resourceType="Collection"
+                            selectMultiple={false}
+                            open={openResourcepicker}
+                            onSelection={(resources) => handleResourcePickerSelection(resources)}
+                            onCancel={() => setOpenResourcepicker(false)}
+                            key="addonCollectionPicker"
+                        />
+                        ) :
+                        (<ResourcePicker
+                            resourceType="Product"
+                            showVariants={false}
+                            open={openResourcepicker}
+                            onSelection={(resources) => handleResourcePickerSelection(resources)}
+                            onCancel={() => setOpenResourcepicker(false)}
+                            key="addonProductPicker"
+                        />
+                        ) :
+                        (<ResourcePicker
+                            resourceType="Product"
+                            showVariants={true}
+                            open={openProductPicker}
+                            onSelection={(resources) => handleProductPicker(resources)}
+                            onCancel={() => setOpenProductPicker(false)}
+                            key="productPicker"
+                        />)
+                }
             </FormLayout>
         </FormLayout>
     );

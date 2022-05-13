@@ -13,6 +13,7 @@ import {
     EmptyState
 } from "@shopify/polaris";
 import { RuleForm } from './RuleForm';
+import { RuleList } from "./RuleList";
 
 const img = 'https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg';
 
@@ -20,6 +21,19 @@ const img = 'https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg';
 export function Dashboard() {
     const [active, setActive] = useState(false);
     const toggleActive = useCallback(() => setActive((active) => !active), []);
+
+    const rule_data = [
+        {
+            name: "Rule Name",
+            products: ["989898", "787989"],
+            addon_type: "product",
+            addons: ["09390", "22334"]
+        }
+    ]
+    const saveData = () => {
+        toggleActive()
+        console.log('save data called', rule_data)
+    }
 
     return (
         <Page fullWidth>
@@ -38,16 +52,23 @@ export function Dashboard() {
                         </Stack>
                     </Card>
                     <Card sectioned>
-                        <EmptyState
-                            heading="No rules created yet"
-                            action={{
-                                content: "Add Rule",
-                                onAction: toggleActive,
-                            }}
-                            image={img}
-                            imageContained
-                        >
-                        </EmptyState>
+                        {
+                            rule_data.length > 0 ?
+                                (<RuleList data={rule_data} />)
+                                :
+                                (
+                                    <EmptyState
+                                        heading="No rules created yet"
+                                        action={{
+                                            content: "Add Rule",
+                                            onAction: toggleActive,
+                                        }}
+                                        image={img}
+                                        imageContained
+                                    >
+                                    </EmptyState>
+                                )
+                        }
                     </Card>
 
 
@@ -58,7 +79,7 @@ export function Dashboard() {
                         title="Rule"
                         primaryAction={{
                             content: 'Save',
-                            onAction: toggleActive,
+                            onAction: saveData,
                         }}
                         secondaryActions={[
                             {

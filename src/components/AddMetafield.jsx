@@ -57,9 +57,9 @@ export function AddMetafield({ selectedItems, onUpdate }) {
                     metafields: [
                       {
                         namespace : "app_meta",
-                        key: "Drinks",
+                        key: "Addon",
                         type: "single_line_text_field",
-                        value: "products - [extra-cheese;gift-wrap]"
+                        value: "products | [coke]"
                       }
                     ]
                   };
