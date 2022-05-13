@@ -161,6 +161,7 @@
         }
         window.pdtAddonUpdate(window.pdtAddOn);
 
+        //fetch
         (function(ns, fetch) {
             if (typeof fetch !== 'function') return;
             ns.fetch = function() {
@@ -173,6 +174,19 @@
             }
         }(window, window.fetch))
 
+        //XHR
+        const request_open = window.XMLHttpRequest.prototype.open;
+        function replace_request() {
+            this.addEventListener("load", function () {
+                let json_data = JSON.parse(this.response)
+                setTimeout(function(){window.pdtAddonUpdate(json_data)},20)
+            });
+            return request_open.apply(this, arguments);
+        }
+        window.XMLHttpRequest.prototype.open = replace_request;
+        
+
+        //TODO
         // adding event on checkout button on cart page
         let submt = document.querySelector('[type=submit]');
         submt.addEventListener("click", function (event) {

@@ -45,9 +45,15 @@ function add_products(button) {
         return response.json();
     }).then((json) => {
         //products added successfully
-        console.log('products added successfully', json)//TODO
-        document.getElementById('product_addon_app').classList.remove("active");
-        window.location.href = "/cart";
+        if (json.status){
+            console.log("Cart error",json)
+            document.querySelector('.cart-error').innerHTML = json.description;
+        }
+        else{
+            console.log('products added successfully', json)//TODO
+            document.getElementById('product_addon_app').classList.remove("active");
+            window.location.href = "/cart";
+        }
     }).catch((err) => {
         //error in adding products to cart
         console.error('error in adding products to cart', err)
@@ -98,6 +104,7 @@ async function render_popup(product_id, button) {
         html_section += `</div>`
     }
     html_section += `
+    <span class="cart-error"></span>
     <button class="addon-atc">Add To Cart</button>
     `
     document.querySelector('.addon-modal-body').innerHTML = html_section;

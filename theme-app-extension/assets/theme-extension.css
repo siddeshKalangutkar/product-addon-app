@@ -93,10 +93,10 @@
     font-weight:bold;
   }
 @media(min-width:769px){
-  .addon-modal .addon-atc:hover{
+  /* .addon-modal .addon-atc:hover{
     background-color: #ffffff;
     color:#121212;
-  }
+  } */
 }
 
 .addon-modal-header {
@@ -225,7 +225,11 @@
   font-size: 24px;
   font-weight: 600;
 }
-
+.cart-error {
+  text-align: center;
+  font-size: 14px;
+  color: #eb0d0d;
+}
 
 /* cart checkout */
 .loading-spinner .loading-overlay {
