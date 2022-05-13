@@ -3,7 +3,8 @@ console.log("Theme app extension js")//TODO
 // adding products to cart with selected addons
 let addon_atc = document.querySelector(".addon-atc")
 addon_atc ? addon_atc.addEventListener("click", add_products) : "";
-function add_products() {
+function add_products(button) {
+    add_spinner(button)
     let product_id = document.querySelector('input[name=id]').value;  //selected product variant id
     let product_quantity = document.querySelector('input[name=quantity]').value;  //selected quantity
     let addon_checkboxes = document.querySelectorAll('.addon-input:checked');
@@ -50,7 +51,7 @@ function add_products() {
     }).catch((err) => {
         //error in adding products to cart
         console.error('error in adding products to cart', err)
-    });
+    }).finally(() => remove_spinner(button));
 }
 
 /* close modal */
@@ -63,7 +64,8 @@ function toggleModal() {
 }
 
 // Ajax popup
-async function render_popup(product_id) {
+async function render_popup(product_id, button) {
+    add_spinner(button)
     let html_section = "";
     let x = window.pdtJSON[product_id]
     for (let key in x) {
@@ -76,8 +78,9 @@ async function render_popup(product_id) {
         if (arr[0].includes('collections')) {
             let collection_handle = arr[1].replace(/\[|\]|\;/gi, "")
             let addon_products_response = await fetch(`/collections/${collection_handle.trim()}/products.json`)
-            let {products} = await addon_products_response.json()
-            for(const product of products){
+            let { products } = await addon_products_response.json()
+            for (const product of products) {
+                console.log("collections", product)
                 html_section += format_html(product)
             }
         }
@@ -85,10 +88,11 @@ async function render_popup(product_id) {
             console.log("products")//TODO
             let product_handle_string = arr[1].replace(/\[|\]/gi, "")
             let product_handles = product_handle_string.split(";")
-            for( const handle of product_handles){
-                let addon_response = await fetch(`/products/${handle.trim()}.json`)
-                let {product} = await addon_response.json()
-                html_section += format_html(product)
+            for (const handle of product_handles) {
+                let addon_response = await fetch(`/products/${handle.trim()}.js`)
+                let product = await addon_response.json()
+                console.log("products", product)
+                html_section += format_product_html(product)
             }
         }
         html_section += `</div>`
@@ -97,28 +101,64 @@ async function render_popup(product_id) {
     <button class="addon-atc">Add To Cart</button>
     `
     document.querySelector('.addon-modal-body').innerHTML = html_section;
-    document.querySelector(".addon-atc").addEventListener("click", add_products)
+    document.querySelector(".addon-atc").addEventListener("click", add_products(this))
     console.log(html_section)//TODO
     document.getElementById('product_addon_app').classList.add("active")
+    remove_spinner(button)
 }
 
-function format_html(product){
+function format_html(product) {
     let data_format = `
     <span class="addon-rule-item">
         <span class="addon-info">
-            ${product.images.length > 0 && product.images[0].src?'<img class="featured-img" src ="'+product.images[0].src+'" height="50px" width="50px" >':''}
+            ${product.images.length > 0 && product.images[0].src ? '<img class="featured-img" src ="' + product.images[0].src + '" height="50px" width="50px" >' : ''}
             <span class="addon-text-info">
                 <span class="name">${product.title}</span>
                 <span class="description">${product.body_html}</span>
             </span>
         </span>
         <span class="price">
-            (+${window.pdtAddOnCurrency+""+product.variants[0].price})
+            (+${window.pdtAddOnCurrency + "" + product.variants[0].price})
             <div class="addon-checkbox">
-                <input type="checkbox" class="addon-input" value="${product.variants[0].id}" data-addon-title="${product.title}" data-addon-price="${product.variants[0].price}">
+                <input type="checkbox" class="addon-input" value="${product.variants[0].id}" data-addon-title="${product.title}" data-addon-price="${product.variants[0].price}" ${!product.variants[0].available ? "disabled" : ""}>
                 <span class="addon-ctm-checkbox"></span>
             </div>
+            ${!product.variants[0].available ? '<span class="addon-ofs">Out of stock</span>' : ''}
         </span>
     </span>`
     return data_format;
+}
+
+function format_product_html(product) {
+    let data_format = `
+    <span class="addon-rule-item">
+        <span class="addon-info">
+            ${product.images.length > 0 && product.media[0].src ? '<img class="featured-img" src ="' + product.media[0].src + '" height="50px" width="50px" >' : ''}
+            <span class="addon-text-info">
+                <span class="name">${product.title}</span>
+                <span class="description">${product.description}</span>
+            </span>
+        </span>
+        <span class="price">
+            (+${window.pdtAddOnCurrency + "" + (product.variants[0].price / 100)})
+            <div class="addon-checkbox">
+                <input type="checkbox" class="addon-input" value="${product.variants[0].id}" data-addon-title="${product.title}" data-addon-price="${product.variants[0].price / 100}" ${!product.variants[0].available ? "disabled" : ""}>
+                <span class="addon-ctm-checkbox"></span>
+            </div>
+            ${!product.variants[0].available ? '<span class="addon-ofs">Out of stock</span>' : ''}
+        </span>
+    </span>`
+    return data_format;
+}
+
+function add_spinner(button) {
+    console.log("passed button", button)
+    const spinner_code_block = `<div class="loading-overlay"><div class="loading-overlay__spinner"><svg height="20" width="20" aria-hidden="true" focusable="false" role="presentation" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg"><circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle></svg></div></div>`
+    button.classList.add("loading-spinner");
+    button.innerHTML += spinner_code_block;
+}
+
+function remove_spinner(button){
+    button.querySelector('.loading-overlay').remove();
+    button.classList.remove('loading-spinner')
 }
