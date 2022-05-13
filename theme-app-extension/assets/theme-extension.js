@@ -3,10 +3,10 @@ console.log("Theme app extension js")//TODO
 // adding products to cart with selected addons
 let addon_atc = document.querySelector(".addon-atc")
 addon_atc ? addon_atc.addEventListener("click", add_products) : "";
-function add_products(button) {
+function add_products(button, product_input_data = {}) {
     add_spinner(button)
-    let product_id = document.querySelector('input[name=id]').value;  //selected product variant id
-    let product_quantity = document.querySelector('input[name=quantity]').value;  //selected quantity
+    let product_id = product_input_data.id ? product_input_data.id : document.querySelector('input[name=id]').value;  //selected product variant id
+    let product_quantity = product_input_data.quantity ? product_input_data.quantity : document.querySelector('input[name=quantity]').value;  //selected quantity
     let addon_checkboxes = document.querySelectorAll('.addon-input:checked');
     let addon_checkboxes_array = [...addon_checkboxes];
     let addon_ids = addon_checkboxes_array.map(checkbox => checkbox.value);  //selected addons id

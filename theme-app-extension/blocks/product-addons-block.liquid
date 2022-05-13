@@ -1,4 +1,4 @@
-{% if template contains "product" %}
+{% if template contains "product" or template contains "collection"  %}
     <div id="product_addon_app">
         <div class="addon-modal-overlay"></div>
         <div class="addon-modal">
@@ -149,7 +149,8 @@
                     if(line_items[i].properties && line_items[i].properties._u_key){
                         let quantity_update_btn_list = cart_items[i].querySelectorAll("{{block.settings.quanitity_selector}}, {{block.settings.delete_selector}}");
                         let quantity_update_btns = [...quantity_update_btn_list]
-                        quantity_update_btns.forEach(btn => btn.remove() )
+                        //quantity_update_btns.forEach(btn => btn.remove() )
+                        quantity_update_btns.forEach(btn => btn.style.display = "none" )
                         let u_key = line_items[i].properties._u_key
                         let removeLineArray = line_items.filter((item)=> { return item.properties && item.properties._u_key == u_key && typeof item.properties._addon_price != 'undefined' } )
                         console.log("Remove Array", removeLineArray)
