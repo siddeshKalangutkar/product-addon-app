@@ -5,33 +5,36 @@ import { ResourcePicker } from "@shopify/app-bridge-react";
 // import { AddonList } from "./AddonList";
 // import { AddonInput } from "./AddonInput";
 
-export function RuleForm() {
-    const [value, setValue] = useState('');
-    const handleChange = useCallback((newValue) => setValue(newValue), []);
+export function RuleForm({formData, updateFormData}) {
+    const [value, setValue] = useState(formData.name?formData.name:"");
+    const handleChange = useCallback((newValue) => {
+        setValue(newValue), []
+        updateFormData({name: "name", value: newValue})
+    });
 
-    const [value2, setValue2] = useState('');
-    const handleChange2 = useCallback((newValue) => setValue2(newValue), []);
-
-    const [selectedChoice, setSelectedChoice] = useState(['none']);
+    const [selectedChoice, setSelectedChoice] = useState(formData.addon_type?[formData.addon_type]:['none']);
     const handleChoiceListChange = useCallback((value) => {
+        console.log("value chocice change", value)
         setSelectedChoice(value)
+        updateFormData({name: "addon_type", value: value})
         setSelectedTags([])
     }, []);
-
-    const [openResourcepicker, setOpenResourcepicker] = useState(false);
-    const handleResourcePickerSelection = useCallback((value) => {
-        setOpenResourcepicker(false)
-        setSelectedTags(value.selection.map(product => product.title))
-    }, []);
-
     const renderChildren = useCallback((isSelected) =>
         isSelected && (
             <Button onClick={setOpenResourcepicker} >Add {selectedChoice}</Button>
         ), [selectedChoice]
     );
 
-    const [selectedTags, setSelectedTags] = useState([]);
+    const [openResourcepicker, setOpenResourcepicker] = useState(false);
+    const [resourcepickerValue, setResourcepickerValue] = useState(formData.addons?formData.addons:[]);
+    const handleResourcePickerSelection = useCallback((value) => {
+        setOpenResourcepicker(false)
+        setResourcepickerValue(value)
+        setSelectedTags(value.selection.map(product => product.title))
+        updateFormData({name: "addons", value: value})
+    }, [resourcepickerValue]);
 
+    const [selectedTags, setSelectedTags] = useState([]);
     const removeTag = useCallback(
         (tag) => () => {
             setSelectedTags((previousTags) =>
@@ -40,7 +43,6 @@ export function RuleForm() {
         },
         [],
     );
-
     const tagMarkup = selectedTags.map((option) => (
         <Tag key={option} onRemove={removeTag(option)}>
             {option}
@@ -61,13 +63,15 @@ export function RuleForm() {
             {option}
         </Tag>
     ));
-
     const [openProductPicker, setOpenProductPicker] = useState(false);
+    const [productpickerValue, setproductpickerValue] = useState(formData.products?formData.products:[]);
     const handleProductPicker = useCallback((value) => {
         setOpenProductPicker(false)
+        setproductpickerValue(value)
         console.log("Productpicker", value)
         setSelectProducts(value.selection.map(product => product.title))
-    }, []);
+        updateFormData({name: "products", value: value})
+    }, [productpickerValue]);
 
     return (
         <FormLayout>

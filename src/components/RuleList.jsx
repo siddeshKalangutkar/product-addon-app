@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, ResourceItem, ResourceList, TextStyle } from '@shopify/polaris';
+import { Card, Button, Stack, ResourceItem, ResourceList, TextStyle } from '@shopify/polaris';
 
 export function RuleList({data}) {
     return (
@@ -14,9 +14,16 @@ export function RuleList({data}) {
                         <ResourceItem
                             id={name}
                         >
-                            <h3>
-                                <TextStyle variation="strong">{name}</TextStyle>
-                            </h3>
+                            <Stack>
+                            <Stack.Item fill>
+                                <h3>
+                                    <TextStyle variation="strong">{name}</TextStyle>
+                                </h3>
+                            </Stack.Item>
+                            <Stack.Item>
+                                <Button plain destructive>Delete</Button>
+                            </Stack.Item>
+                            </Stack>
                         </ResourceItem>
                     );
                 }}
