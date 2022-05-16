@@ -10,7 +10,7 @@ async function searchDbFunction() {
         await client.connect()
         const db = client.db('ProductAddons')
         const col = db.collection('Accounts')
-        const myDoc = await col.findOne({"shop":"newShow.com"});
+        const myDoc = await col.findOne({ "shop": "newShow.com" });
         console.log(myDoc)
     }
     catch (err) {
@@ -27,8 +27,8 @@ async function addDbFunction() {
         const db = client.db('ProductAddons')
         const col = db.collection('Accounts')
         let data = {
-            "shop" : "newShow.com",
-            "accessToken" : "xy1234d"
+            "shop": "newShow.com",
+            "accessToken": "xy1234d"
         }
         const added = await col.insertOne(data);
         console.log("Added successfully ", added)
@@ -47,16 +47,16 @@ export async function update_access_token(shop_name, token_data) {
         const db = client.db('ProductAddons')
         const col = db.collection('Accounts')
         let data = {
-            "shop" : shop_name,
-            "accessToken" : token_data
+            "shop": shop_name,
+            "accessToken": token_data
         }
-        const result = await col.updateOne({shop: shop_name}, { $set: data}, {upsert: true});
+        const result = await col.updateOne({ shop: shop_name }, { $set: data }, { upsert: true });
         console.log("Updated Access Token Successfully ", result)
-        return {success: true}
+        return { success: true }
     }
     catch (err) {
         console.log(err)
-        return {success: false, error: err}
+        return { success: false, error: err }
     }
     finally {
         await client.close()
@@ -68,13 +68,13 @@ export async function find_access_token(shop_name) {
         await client.connect()
         const db = client.db('ProductAddons')
         const col = db.collection('Accounts')
-        const result = await col.findOne({"shop":shop_name});
-        console.log({result})
-        return {success: true, accessToken: result.accessToken}
+        const result = await col.findOne({ "shop": shop_name });
+        console.log({ result })
+        return { success: true, accessToken: result.accessToken }
     }
     catch (err) {
         console.log(err)
-        return {success: false, error: err}
+        return { success: false, error: err }
     }
     finally {
         await client.close()
@@ -86,13 +86,33 @@ export async function update_rule(data) {
         await client.connect()
         const db = client.db('ProductAddons')
         const col = db.collection('Rules')
-        const result = await col.updateOne({shop: data.shop, name: data.name}, { $set: data}, {upsert: true});
+        const result = await col.updateOne({ shop: data.shop, name: data.name }, { $set: data }, { upsert: true });
         console.log("Updated Access Token Successfully ", result)
-        return {success: true}
+        return { success: true }
     }
     catch (err) {
         console.log(err)
-        return {success: false, error: err}
+        return { success: false, error: err }
+    }
+    finally {
+        await client.close()
+    }
+}
+
+export async function get_rules(data) {
+    try {
+        await client.connect()
+        const db = client.db('ProductAddons')
+        const col = db.collection('Rules')
+        console.log("shop", data)
+        const result = col.find({ shop: data });
+        const rules = await result.toArray();
+        console.log("Fetched Rules Successfully ", rules)
+        return { success: true, data: rules }
+    }
+    catch (err) {
+        console.log(err)
+        return { success: false, error: err }
     }
     finally {
         await client.close()
