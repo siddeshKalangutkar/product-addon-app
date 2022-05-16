@@ -5,18 +5,18 @@ import { ResourcePicker } from "@shopify/app-bridge-react";
 // import { AddonList } from "./AddonList";
 // import { AddonInput } from "./AddonInput";
 
-export function RuleForm({formData, updateFormData}) {
-    const [value, setValue] = useState(formData.name?formData.name:"");
+export function RuleForm({ formData, updateFormData }) {
+    const [value, setValue] = useState(formData.name ? formData.name : "");
     const handleChange = useCallback((newValue) => {
         setValue(newValue), []
-        updateFormData({name: "name", value: newValue})
+        updateFormData({ name: "name", value: newValue })
     });
 
-    const [selectedChoice, setSelectedChoice] = useState(formData.addon_type?[formData.addon_type]:['none']);
+    const [selectedChoice, setSelectedChoice] = useState(formData.addon_type && formData.addon_type.length > 0 ? [formData.addon_type[0]] : ['none']);
     const handleChoiceListChange = useCallback((value) => {
         console.log("value chocice change", value)
         setSelectedChoice(value)
-        updateFormData({name: "addon_type", value: value})
+        updateFormData({ name: "addon_type", value: value })
         setSelectedTags([])
     }, []);
     const renderChildren = useCallback((isSelected) =>
@@ -26,15 +26,15 @@ export function RuleForm({formData, updateFormData}) {
     );
 
     const [openResourcepicker, setOpenResourcepicker] = useState(false);
-    const [resourcepickerValue, setResourcepickerValue] = useState(formData.addons?formData.addons:[]);
+    const [resourcepickerValue, setResourcepickerValue] = useState((typeof formData.addons != 'undefined') && formData.addons.selection.length > 0 ? formData.addons.selection : []);
     const handleResourcePickerSelection = useCallback((value) => {
         setOpenResourcepicker(false)
         setResourcepickerValue(value)
         setSelectedTags(value.selection.map(product => product.title))
-        updateFormData({name: "addons", value: value})
+        updateFormData({ name: "addons", value: value })
     }, [resourcepickerValue]);
 
-    const [selectedTags, setSelectedTags] = useState([]);
+    const [selectedTags, setSelectedTags] = useState((typeof formData.addons != 'undefined' ? formData.addons.selection.map(item => item.handle) : []));
     const removeTag = useCallback(
         (tag) => () => {
             setSelectedTags((previousTags) =>
@@ -49,7 +49,7 @@ export function RuleForm({formData, updateFormData}) {
         </Tag>
     ));
 
-    const [selectProducts, setSelectProducts] = useState([]);
+    const [selectProducts, setSelectProducts] = useState((typeof formData.products != 'undefined') ? formData.products.selection.map(item => item.handle) : []);
     const removeSelectedProducts = useCallback(
         (tag) => () => {
             setSelectProducts((previousTags) =>
@@ -64,13 +64,13 @@ export function RuleForm({formData, updateFormData}) {
         </Tag>
     ));
     const [openProductPicker, setOpenProductPicker] = useState(false);
-    const [productpickerValue, setproductpickerValue] = useState(formData.products?formData.products:[]);
+    const [productpickerValue, setproductpickerValue] = useState((typeof formData.products != 'undefined') && formData.products.selection.length > 0 ? formData.products.selection : []);
     const handleProductPicker = useCallback((value) => {
         setOpenProductPicker(false)
         setproductpickerValue(value)
         console.log("Productpicker", value)
         setSelectProducts(value.selection.map(product => product.title))
-        updateFormData({name: "products", value: value})
+        updateFormData({ name: "products", value: value })
     }, [productpickerValue]);
 
     return (
@@ -107,24 +107,24 @@ export function RuleForm({formData, updateFormData}) {
                 {
                     selectProducts.length > 0 ?
                         selectedChoice == "collection" ?
-                        (<ResourcePicker
-                            resourceType="Collection"
-                            selectMultiple={false}
-                            open={openResourcepicker}
-                            onSelection={(resources) => handleResourcePickerSelection(resources)}
-                            onCancel={() => setOpenResourcepicker(false)}
-                            key="addonCollectionPicker"
-                        />
-                        ) :
-                        (<ResourcePicker
-                            resourceType="Product"
-                            showVariants={false}
-                            open={openResourcepicker}
-                            onSelection={(resources) => handleResourcePickerSelection(resources)}
-                            onCancel={() => setOpenResourcepicker(false)}
-                            key="addonProductPicker"
-                        />
-                        ) :
+                            (<ResourcePicker
+                                resourceType="Collection"
+                                selectMultiple={false}
+                                open={openResourcepicker}
+                                onSelection={(resources) => handleResourcePickerSelection(resources)}
+                                onCancel={() => setOpenResourcepicker(false)}
+                                key="addonCollectionPicker"
+                            />
+                            ) :
+                            (<ResourcePicker
+                                resourceType="Product"
+                                showVariants={false}
+                                open={openResourcepicker}
+                                onSelection={(resources) => handleResourcePickerSelection(resources)}
+                                onCancel={() => setOpenResourcepicker(false)}
+                                key="addonProductPicker"
+                            />
+                            ) :
                         (<ResourcePicker
                             resourceType="Product"
                             showVariants={true}
