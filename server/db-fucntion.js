@@ -80,3 +80,21 @@ export async function find_access_token(shop_name) {
         await client.close()
     }
 }
+
+export async function update_rule(data) {
+    try {
+        await client.connect()
+        const db = client.db('ProductAddons')
+        const col = db.collection('Rules')
+        const result = await col.updateOne({shop: data.shop, name: data.name}, { $set: data}, {upsert: true});
+        console.log("Updated Access Token Successfully ", result)
+        return {success: true}
+    }
+    catch (err) {
+        console.log(err)
+        return {success: false, error: err}
+    }
+    finally {
+        await client.close()
+    }
+}

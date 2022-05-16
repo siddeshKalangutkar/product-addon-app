@@ -16,7 +16,7 @@ const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
 import cors from "cors";
 import draft_checkout from "./api/draftOrder.js";
-import {find_access_token} from "./db-fucntion.js"
+import {find_access_token, update_rule} from "./db-fucntion.js"
 
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
@@ -107,6 +107,32 @@ export async function createServer(
     }
     catch (err){
       console.log('Error at Checkout API', err)
+      res.json({error: err})
+    }
+  });
+
+  app.get("/get-shop", verifyRequest(app), async (req, res) => {
+    // console.log("shop",Shopify.Context.SESSION_STORAGE)
+    try{
+      const session = await Shopify.Utils.loadCurrentSession(req, res, true);
+      console.log("session.shop: ", session.shop)
+      res.status(200).send({shop: session.shop})
+    }
+    catch (err){
+      console.log('Error at getting shop name', err)
+      res.status(500).send({error: err})
+    }
+  });
+
+  app.post("/update-rule", async (req, res) => {
+    // console.log("shop",Shopify.Context.SESSION_STORAGE)
+    try{
+      console.log("request body", req)
+      let response_data = await update_rule(req.body)
+      res.json(response_data)
+    }
+    catch (err){
+      console.log('Error at Update Rule API', err)
       res.json({error: err})
     }
   });

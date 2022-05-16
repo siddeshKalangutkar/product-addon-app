@@ -14,26 +14,59 @@ import {
 } from "@shopify/polaris";
 import { RuleForm } from './RuleForm';
 import { RuleList } from "./RuleList";
+import { userLoggedInFetch } from "../App";
+import { Toast, useAppBridge } from "@shopify/app-bridge-react";
 
 const img = 'https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg';
 
 
 export function Dashboard() {
+    const app = useAppBridge();
+    const fetch = userLoggedInFetch(app);
+
     const [active, setActive] = useState(false);
     const toggleActive = useCallback(() => setActive((active) => !active), []);
 
     const rule_data = [
         {
-            name: "Rule Name",
+            name: "Rule Name 1",
+            products: ["989898", "787989"],
+            addon_type: "product",
+            addons: ["09390", "22334"]
+        },
+        {
+            name: "Rule Name 2",
             products: ["989898", "787989"],
             addon_type: "product",
             addons: ["09390", "22334"]
         }
     ]
-    const saveData = () => {
+    const saveData = async () => {
         toggleActive()
-        console.log('save data called', rule_data)
+        console.log('save data called', formData)
+        let shop_response = await fetch("/get-shop")
+        let shop = await shop_response.json();
+        console.log("shop", shop)
+        let data = formData
+        data["shop"] = shop.shop
+        console.log("data",data)
+        fetch("/update-rule", { method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)})
+            .then(res => res.json())
+            .then(json => console.log(json))
+            .catch(error => console.log(error))
     }
+    const [formData, updateFormData] = useState({});
+    const updateFormAllData = (value) => {
+        updateFormData(value);
+    };
+    const updateFormField = (e) => {
+        updateFormData(formData => ({
+            ...formData,
+            // Trimming any whitespace
+            [e.name]: e.value
+        }));
+        console.log("Updated form data", formData)
+    };
 
     return (
         <Page fullWidth>
@@ -54,7 +87,14 @@ export function Dashboard() {
                     <Card sectioned>
                         {
                             rule_data.length > 0 ?
-                                (<RuleList data={rule_data} />)
+                                (
+                                    <>
+                                        <TextContainer>
+                                            <Heading>Rules</Heading>
+                                            <RuleList data={rule_data} />
+                                        </TextContainer>
+                                    </>
+                                )
                                 :
                                 (
                                     <EmptyState
@@ -90,7 +130,7 @@ export function Dashboard() {
                     >
                         <Modal.Section>
                             <Stack vertical>
-                                <RuleForm />
+                                <RuleForm formData={formData} updateFormData={updateFormField} />
                             </Stack>
                         </Modal.Section>
                     </Modal>
