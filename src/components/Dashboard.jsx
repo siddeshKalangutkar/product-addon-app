@@ -7,6 +7,7 @@ import {
     Image,
     Stack,
     Link,
+    Banner,
     Heading,
     Modal,
     Button,
@@ -15,9 +16,30 @@ import {
 import { RuleForm } from './RuleForm';
 import { RuleList } from "./RuleList";
 import { userLoggedInFetch } from "../App";
-import { Toast, useAppBridge } from "@shopify/app-bridge-react";
+import { Loading, Toast, useAppBridge } from "@shopify/app-bridge-react";
+import { gql, useMutation } from "@apollo/client";
 
 const img = 'https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg';
+
+const ADD_METAFIELD = gql`
+  mutation addProductMetafields($input: ProductInput!) {
+    productUpdate(input: $input) {
+      product {
+        id
+        metafields(first: 5) {
+          edges {
+            node {
+              id
+              namespace
+              key
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 
 
 export function Dashboard() {
@@ -42,6 +64,32 @@ export function Dashboard() {
         }
     ]
     const saveData = async () => {
+
+        let promise = new Promise((resolve) => resolve());
+        for (const product of formData.products.selection) {
+            console.log("product", product)
+            const productInput = {
+                id: product.id,
+                metafields: [
+                    {
+                        namespace: "app_meta",
+                        key: formData.name,
+                        type: "single_line_text_field",
+                        value: formData.addon_type[0]+" | "+formData.addons.selection.map(pdt => pdt.handle).join(";")
+                    }
+                ]
+            };
+            console.log("productInput", productInput)
+            promise = promise.then(() =>
+                mutateMetafield({
+                    variables: { input: productInput },
+                })
+            );
+        }
+        if (promise) {
+            promise.then(() => (console.log("metafields added")));
+        }
+
         toggleActive()
         console.log('save data called', formData)
         let shop_response = await fetch("/get-shop")
@@ -49,8 +97,8 @@ export function Dashboard() {
         console.log("shop", shop)
         let data = formData
         data["shop"] = shop.shop
-        console.log("data",data)
-        fetch("/update-rule", { method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)})
+        console.log("data", data)
+        fetch("/update-rule", { method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
             .then(res => res.json())
             .then(json => console.log(json))
             .catch(error => console.log(error))
@@ -67,6 +115,13 @@ export function Dashboard() {
         }));
         console.log("Updated form data", formData)
     };
+
+    const [mutateMetafield, { data, loading, error }] = useMutation(ADD_METAFIELD);
+    if (loading) return <Loading />;
+    if (error) {
+        console.warn(error);
+        return <Banner status="critical">{error.message}</Banner>;
+    }
 
     return (
         <Page fullWidth>
