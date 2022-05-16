@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Button, Stack, ResourceItem, ResourceList, TextStyle } from '@shopify/polaris';
 
-export function RuleList({ data }) {
+export function RuleList({ data, openModal }) {
     return (
         <Card>
             <ResourceList
@@ -13,6 +13,10 @@ export function RuleList({ data }) {
                     return (
                         <ResourceItem
                             id={name}
+                            onClick={() => {
+                                // console.log("Item",item)
+                                openModal(item)
+                            }}
                         >
                             <Stack>
                                 <Stack.Item fill>

@@ -104,14 +104,17 @@ export function Dashboard() {
         setRuleData(db_rules.data)
     }
 
+    const openModal = async (data) => {
+        toggleActive()
+        updateFormData(data)
+    }
+
     useEffect(() => {
         renderRules()
     },[])
 
     const [formData, updateFormData] = useState({});
-    const updateFormAllData = (value) => {
-        updateFormData(value);
-    };
+    
     const updateFormField = (e) => {
         updateFormData(formData => ({
             ...formData,
@@ -140,7 +143,7 @@ export function Dashboard() {
                             alignment="right"
                         >
                             <Stack.Item fill>
-                                <Button onClick={toggleActive}>Add Rule</Button>
+                                <Button onClick={()=>{openModal({})}}>Add Rule</Button>
                             </Stack.Item>
                         </Stack>
                     </Card>
@@ -151,7 +154,7 @@ export function Dashboard() {
                                     <>
                                         <TextContainer>
                                             <Heading>Rules</Heading>
-                                            <RuleList data={ruleData} />
+                                            <RuleList data={ruleData} openModal={openModal}/>
                                         </TextContainer>
                                     </>
                                 )
