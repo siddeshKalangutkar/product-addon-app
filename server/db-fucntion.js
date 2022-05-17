@@ -118,3 +118,21 @@ export async function get_rules(data) {
         await client.close()
     }
 }
+
+export async function delete_rule(data){
+    try {
+        await client.connect()
+        const db = client.db('ProductAddons')
+        const col = db.collection('Rules')
+        const result = await col.deleteOne(data);
+        console.log("Deleted Rule Successfully ", result)
+        return { success: true, data: result }
+    }
+    catch (err) {
+        console.log(err)
+        return { success: false, error: err }
+    }
+    finally {
+        await client.close()
+    }
+}

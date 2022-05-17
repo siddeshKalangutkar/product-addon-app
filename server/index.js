@@ -16,7 +16,7 @@ const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
 import cors from "cors";
 import draft_checkout from "./api/draftOrder.js";
-import {find_access_token, update_rule, get_rules} from "./db-fucntion.js"
+import {find_access_token, update_rule, get_rules, delete_rule} from "./db-fucntion.js"
 
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
@@ -137,6 +137,18 @@ export async function createServer(
   app.post("/get-rules", async (req, res) => {
     try{
       let response_data = await get_rules(req.body.shop)
+      // console.log("response_data: ", response_data)
+      res.json(response_data)
+    }
+    catch (err){
+      console.log('Error at getting rule data', err)
+      res.json({error: err})
+    }
+  });
+
+  app.post("/delete-rule", async (req, res) => {
+    try{
+      let response_data = await delete_rule(req.body)
       // console.log("response_data: ", response_data)
       res.json(response_data)
     }

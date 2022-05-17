@@ -177,7 +177,7 @@ export function Dashboard() {
 
             console.log("productInput", metaInput)
             promise = promise.then(() =>
-            deleteMetafield({
+                deleteMetafield({
                     variables: { input: metaInput },
                 })
             );
@@ -186,6 +186,17 @@ export function Dashboard() {
             promise.then(() => (console.log("metafields deleted")));
         }
         toggledeleteActive()
+        let shop_response = await fetch("/get-shop")
+        let { shop } = await shop_response.json();
+        let data = { shop: shop, name: deleteData.name }
+        console.log("data", data)
+        fetch("/delete-rule", { method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+            .then(res => res.json())
+            .then(json => {
+                console.log(json)
+                renderRules()
+            })
+            .catch(error => console.log(error))
     }
     const openDeleteModal = async (data) => {
         toggledeleteActive()
