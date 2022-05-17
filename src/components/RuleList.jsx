@@ -1,7 +1,8 @@
 import React from 'react';
-import { Card, Button, ButtonGroup, Stack, ResourceItem, ResourceList, TextStyle } from '@shopify/polaris';
+import { Card, Button, Modal, ButtonGroup, Stack, ResourceItem, ResourceList, TextStyle } from '@shopify/polaris';
 
-export function RuleList({ data, openModal }) {
+export function RuleList({ data, openModal, openDeleteModal }) {
+
     return (
         <Card>
             <ResourceList
@@ -23,7 +24,7 @@ export function RuleList({ data, openModal }) {
                                 <Stack.Item>
                                     <ButtonGroup spacing="loose">
                                         <Button plain onClick={() => { openModal(item,true)}}>Edit</Button>
-                                        <Button plain destructive onClick={()=>{ console.log("Delete cliked")}}>Delete</Button>
+                                        <Button plain destructive onClick={()=>{ console.log("Delete cliked");openDeleteModal(item)}}>Delete</Button>
                                     </ButtonGroup>
                                 </Stack.Item>
                             </Stack>

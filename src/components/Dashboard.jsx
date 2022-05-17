@@ -40,6 +40,18 @@ const METAFIELD_ID = gql`
   }
 `;
 
+const DELETE_METAFIELD = gql`
+  mutation metafieldDelete($input: MetafieldDeleteInput!) {
+    metafieldDelete(input: $input) {
+      deletedId
+      userErrors {
+        field
+        message
+      }
+    }
+  }
+`;
+
 
 export function Dashboard() {
     const app = useAppBridge();
@@ -47,6 +59,9 @@ export function Dashboard() {
 
     const [active, setActive] = useState(false);
     const toggleActive = useCallback(() => setActive((active) => !active), []);
+
+    const [deleteActive, setDeleteActive] = useState(false);
+    const toggledeleteActive = useCallback(() => setDeleteActive((active) => !active), []);
 
     const [readonly, setReadonly] = useState(false)
 
@@ -65,8 +80,8 @@ export function Dashboard() {
                     "key": formData.name
                 }
             })
-            console.log("metafield_id ",metafield_id_response)
-            let metafield_id = metafield_id_response.data.product.metafield ? metafield_id_response.data.product.metafield.id : null ;
+            console.log("metafield_id ", metafield_id_response)
+            let metafield_id = metafield_id_response.data.product.metafield ? metafield_id_response.data.product.metafield.id : null;
 
             const productInput = {
                 id: product.id,
@@ -130,7 +145,6 @@ export function Dashboard() {
     }, [])
 
     const [formData, updateFormData] = useState({});
-
     const updateFormField = (e) => {
         updateFormData(formData => ({
             ...formData,
@@ -140,7 +154,46 @@ export function Dashboard() {
         console.log("Updated form data", formData)
     };
 
+    const [deleteData, setDeleteData] = useState({});
+    const deleteFormData = async () => {
+        // console.log(deleteData)
+        let promise = new Promise((resolve) => resolve());
+        for (const product of deleteData.products.selection) {
+            // console.log("product", product)
+
+            let metafield_id_response = await get_metafield_id({
+                variables: {
+                    "namespace": "app_meta",
+                    "ownerId": product.id,
+                    "key": deleteData.name
+                }
+            })
+            console.log("metafield_id ", metafield_id_response)
+            let metafield_id = metafield_id_response.data.product.metafield ? metafield_id_response.data.product.metafield.id : null;
+
+            const metaInput = {
+                id: metafield_id
+            };
+
+            console.log("productInput", metaInput)
+            promise = promise.then(() =>
+            deleteMetafield({
+                    variables: { input: metaInput },
+                })
+            );
+        }
+        if (promise) {
+            promise.then(() => (console.log("metafields deleted")));
+        }
+        toggledeleteActive()
+    }
+    const openDeleteModal = async (data) => {
+        toggledeleteActive()
+        setDeleteData(data)
+    }
+
     const [get_metafield_id, metafield_id_res] = useLazyQuery(METAFIELD_ID);
+    const [deleteMetafield, deleteMetaRes] = useMutation(DELETE_METAFIELD);
     const [mutateMetafield, { data, loading, error }] = useMutation(ADD_METAFIELD);
     if (loading) return <Loading />;
     if (error) {
@@ -160,7 +213,7 @@ export function Dashboard() {
                             alignment="right"
                         >
                             <Stack.Item fill>
-                                <Button onClick={() => { openModal({},false) }}>Add Rule</Button>
+                                <Button onClick={() => { openModal({}, false) }}>Add Rule</Button>
                             </Stack.Item>
                         </Stack>
                     </Card>
@@ -171,7 +224,7 @@ export function Dashboard() {
                                     <>
                                         <TextContainer>
                                             <Heading>Rules</Heading>
-                                            <RuleList data={ruleData} openModal={openModal} />
+                                            <RuleList data={ruleData} openModal={openModal} openDeleteModal={openDeleteModal} />
                                         </TextContainer>
                                     </>
                                 )
@@ -215,6 +268,29 @@ export function Dashboard() {
                         </Modal.Section>
                     </Modal>
 
+                    <Modal
+                        small
+                        open={deleteActive}
+                        onClose={toggledeleteActive}
+                        title="Delete Rule"
+                        primaryAction={{
+                            content: 'Delete',
+                            destructive: true,
+                            onAction: deleteFormData
+                        }}
+                        secondaryActions={[
+                            {
+                                content: 'Cancel',
+                                onAction: toggledeleteActive,
+                            },
+                        ]}
+                    >
+                        <Modal.Section>
+                            <Stack vertical>
+                                <p>Delete the <b>{deleteData.name}</b> rule?</p>
+                            </Stack>
+                        </Modal.Section>
+                    </Modal>
 
                 </Layout.Section>
             </Layout>
