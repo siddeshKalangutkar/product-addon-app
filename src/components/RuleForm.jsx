@@ -5,7 +5,7 @@ import { ResourcePicker } from "@shopify/app-bridge-react";
 // import { AddonList } from "./AddonList";
 // import { AddonInput } from "./AddonInput";
 
-export function RuleForm({ formData, updateFormData, readonly }) {
+export function RuleForm({ formData, updateFormData, readonly, setDeletedProducts }) {
     const [value, setValue] = useState(formData.name ? formData.name : "");
     const handleChange = useCallback((newValue) => {
         setValue(newValue), []
@@ -40,6 +40,7 @@ export function RuleForm({ formData, updateFormData, readonly }) {
             setSelectedTags((previousTags) =>
                 previousTags.filter((previousTag) => previousTag !== tag),
             );
+            handleResourcePickerSelection({selection : formData.addons.selection.filter((item) => item.handle != tag) })
         },
         [],
     );
@@ -55,6 +56,10 @@ export function RuleForm({ formData, updateFormData, readonly }) {
             setSelectProducts((previousTags) =>
                 previousTags.filter((previousTag) => previousTag !== tag),
             );
+            handleProductPicker({selection : formData.products.selection.filter((item) => item.handle != tag) })
+            if(readonly){
+                setDeletedProducts(prevState => [...prevState, {id: formData.products.selection.filter((item) => item.handle == tag).map(item => item.id).join(''), key: formData.name }])
+            }
         },
         [],
     );
@@ -111,6 +116,7 @@ export function RuleForm({ formData, updateFormData, readonly }) {
                                 resourceType="Collection"
                                 selectMultiple={false}
                                 open={openResourcepicker}
+                                // initialSelectionIds = {resourcepickerValue.length > 0 ? resourcepickerValue.map(item =>item.id) : []}
                                 onSelection={(resources) => handleResourcePickerSelection(resources)}
                                 onCancel={() => setOpenResourcepicker(false)}
                                 key="addonCollectionPicker"
@@ -120,6 +126,7 @@ export function RuleForm({ formData, updateFormData, readonly }) {
                                 resourceType="Product"
                                 showVariants={false}
                                 open={openResourcepicker}
+                                // initialSelectionIds = {resourcepickerValue.length > 0 ? resourcepickerValue.map(item =>item.id) : []}
                                 onSelection={(resources) => handleResourcePickerSelection(resources)}
                                 onCancel={() => setOpenResourcepicker(false)}
                                 key="addonProductPicker"
@@ -129,6 +136,7 @@ export function RuleForm({ formData, updateFormData, readonly }) {
                             resourceType="Product"
                             showVariants={true}
                             open={openProductPicker}
+                            // initialSelectionIds = {productpickerValue.length > 0 ? productpickerValue.map(item =>item.id) : []}
                             onSelection={(resources) => handleProductPicker(resources)}
                             onCancel={() => setOpenProductPicker(false)}
                             key="productPicker"

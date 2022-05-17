@@ -69,7 +69,42 @@ export function Dashboard() {
 
     const saveData = async () => {
 
+        console.log("deleted products", deletedProducts)
+
         let promise = new Promise((resolve) => resolve());
+
+        if (deletedProducts.length > 0) {
+            for (const product of deletedProducts) {
+                // console.log("product", product)
+
+                let metafield_id_response = await get_metafield_id({
+                    variables: {
+                        "namespace": "app_meta",
+                        "ownerId": product.id,
+                        "key": product.key
+                    }
+                })
+                console.log("metafield_id ", metafield_id_response)
+                let metafield_id = metafield_id_response.data.product.metafield ? metafield_id_response.data.product.metafield.id : null;
+
+                const metaInput = {
+                    id: metafield_id
+                };
+                console.log("metaInput", metaInput)
+                promise = promise.then(() =>
+                    deleteMetafield({
+                        variables: { input: metaInput },
+                    })
+                );
+            }
+            if (promise) {
+                promise.then(() => {
+                    setDeletedProducts([])
+                    console.log("metafields added");
+                });
+            }
+        }
+
         for (const product of formData.products.selection) {
             // console.log("product", product)
 
@@ -143,6 +178,8 @@ export function Dashboard() {
     useEffect(() => {
         renderRules()
     }, [])
+
+    const [deletedProducts, setDeletedProducts] = useState([]);
 
     const [formData, updateFormData] = useState({});
     const updateFormField = (e) => {
@@ -274,7 +311,7 @@ export function Dashboard() {
                     >
                         <Modal.Section>
                             <Stack vertical>
-                                <RuleForm formData={formData} updateFormData={updateFormField} readonly={readonly} />
+                                <RuleForm formData={formData} updateFormData={updateFormField} readonly={readonly} setDeletedProducts={setDeletedProducts} />
                             </Stack>
                         </Modal.Section>
                     </Modal>
