@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Button, Stack, ResourceItem, ResourceList, TextStyle } from '@shopify/polaris';
+import { Card, Button, ButtonGroup, Stack, ResourceItem, ResourceList, TextStyle } from '@shopify/polaris';
 
 export function RuleList({ data, openModal }) {
     return (
@@ -13,10 +13,6 @@ export function RuleList({ data, openModal }) {
                     return (
                         <ResourceItem
                             id={name}
-                            onClick={() => {
-                                // console.log("Item",item)
-                                openModal(item)
-                            }}
                         >
                             <Stack>
                                 <Stack.Item fill>
@@ -25,7 +21,10 @@ export function RuleList({ data, openModal }) {
                                     </h3>
                                 </Stack.Item>
                                 <Stack.Item>
-                                    <Button plain destructive>Delete</Button>
+                                    <ButtonGroup spacing="loose">
+                                        <Button plain onClick={() => { openModal(item,true)}}>Edit</Button>
+                                        <Button plain destructive onClick={()=>{ console.log("Delete cliked")}}>Delete</Button>
+                                    </ButtonGroup>
                                 </Stack.Item>
                             </Stack>
                         </ResourceItem>

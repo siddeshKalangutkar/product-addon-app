@@ -87,7 +87,7 @@ export async function update_rule(data) {
         const db = client.db('ProductAddons')
         const col = db.collection('Rules')
         const result = await col.updateOne({ shop: data.shop, name: data.name }, { $set: data }, { upsert: true });
-        console.log("Updated Access Token Successfully ", result)
+        console.log("Updated Rules Successfully ", result)
         return { success: true }
     }
     catch (err) {

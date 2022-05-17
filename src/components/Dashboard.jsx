@@ -1,23 +1,10 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import {
-    Card,
-    Page,
-    Layout,
-    TextContainer,
-    Image,
-    Stack,
-    Link,
-    Banner,
-    Heading,
-    Modal,
-    Button,
-    EmptyState
-} from "@shopify/polaris";
+import { Card, Page, Layout, TextContainer, Image, Stack, Link, Banner, Heading, Modal, Button, EmptyState } from "@shopify/polaris";
 import { RuleForm } from './RuleForm';
 import { RuleList } from "./RuleList";
 import { userLoggedInFetch } from "../App";
 import { Loading, Toast, useAppBridge } from "@shopify/app-bridge-react";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery, useLazyQuery } from "@apollo/client";
 
 const img = 'https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg';
 
@@ -41,6 +28,18 @@ const ADD_METAFIELD = gql`
   }
 `;
 
+const METAFIELD_ID = gql`
+  query ProductMetafield($namespace: String!, $ownerId: ID!, $key: String!) {
+    product(id: $ownerId) {
+      metafield(key: $key namespace: $namespace) {
+            id
+            key
+            value
+      }
+    }
+  }
+`;
+
 
 export function Dashboard() {
     const app = useAppBridge();
@@ -49,13 +48,26 @@ export function Dashboard() {
     const [active, setActive] = useState(false);
     const toggleActive = useCallback(() => setActive((active) => !active), []);
 
+    const [readonly, setReadonly] = useState(false)
+
     const [ruleData, setRuleData] = useState([]);
 
     const saveData = async () => {
 
         let promise = new Promise((resolve) => resolve());
         for (const product of formData.products.selection) {
-            console.log("product", product)
+            // console.log("product", product)
+
+            let metafield_id_response = await get_metafield_id({
+                variables: {
+                    "namespace": "app_meta",
+                    "ownerId": product.id,
+                    "key": formData.name
+                }
+            })
+            console.log("metafield_id ",metafield_id_response)
+            let metafield_id = metafield_id_response.data.product.metafield ? metafield_id_response.data.product.metafield.id : null ;
+
             const productInput = {
                 id: product.id,
                 metafields: [
@@ -63,10 +75,11 @@ export function Dashboard() {
                         namespace: "app_meta",
                         key: formData.name,
                         type: "single_line_text_field",
-                        value: formData.addon_type[0]+" | "+formData.addons.selection.map(pdt => pdt.handle).join(";")
+                        value: formData.addon_type[0] + " | " + formData.addons.selection.map(pdt => pdt.handle).join(";")
                     }
                 ]
             };
+            metafield_id ? productInput.metafields[0].id = metafield_id : "";
             console.log("productInput", productInput)
             promise = promise.then(() =>
                 mutateMetafield({
@@ -79,13 +92,15 @@ export function Dashboard() {
         }
 
         toggleActive()
-        console.log('save data called', formData)
+        // console.log('save data called', formData)
         let shop_response = await fetch("/get-shop")
         let shop = await shop_response.json();
-        console.log("shop", shop)
+        // console.log("shop", shop)
         let data = formData
         data["shop"] = shop.shop
+        delete data._id
         console.log("data", data)
+
         fetch("/update-rule", { method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
             .then(res => res.json())
             .then(json => {
@@ -98,23 +113,24 @@ export function Dashboard() {
     const renderRules = async () => {
         let shop_response = await fetch("/get-shop")
         let shop = await shop_response.json();
-        let db_rules_response = await fetch("/get-rules", {method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(shop) })
+        let db_rules_response = await fetch("/get-rules", { method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(shop) })
         let db_rules = await db_rules_response.json()
         console.log("db_rules", db_rules)
         setRuleData(db_rules.data)
     }
 
-    const openModal = async (data) => {
+    const openModal = async (data, editable) => {
         toggleActive()
         updateFormData(data)
+        setReadonly(editable)
     }
 
     useEffect(() => {
         renderRules()
-    },[])
+    }, [])
 
     const [formData, updateFormData] = useState({});
-    
+
     const updateFormField = (e) => {
         updateFormData(formData => ({
             ...formData,
@@ -124,6 +140,7 @@ export function Dashboard() {
         console.log("Updated form data", formData)
     };
 
+    const [get_metafield_id, metafield_id_res] = useLazyQuery(METAFIELD_ID);
     const [mutateMetafield, { data, loading, error }] = useMutation(ADD_METAFIELD);
     if (loading) return <Loading />;
     if (error) {
@@ -143,7 +160,7 @@ export function Dashboard() {
                             alignment="right"
                         >
                             <Stack.Item fill>
-                                <Button onClick={()=>{openModal({})}}>Add Rule</Button>
+                                <Button onClick={() => { openModal({},false) }}>Add Rule</Button>
                             </Stack.Item>
                         </Stack>
                     </Card>
@@ -154,7 +171,7 @@ export function Dashboard() {
                                     <>
                                         <TextContainer>
                                             <Heading>Rules</Heading>
-                                            <RuleList data={ruleData} openModal={openModal}/>
+                                            <RuleList data={ruleData} openModal={openModal} />
                                         </TextContainer>
                                     </>
                                 )
@@ -193,7 +210,7 @@ export function Dashboard() {
                     >
                         <Modal.Section>
                             <Stack vertical>
-                                <RuleForm formData={formData} updateFormData={updateFormField} />
+                                <RuleForm formData={formData} updateFormData={updateFormField} readonly={readonly} />
                             </Stack>
                         </Modal.Section>
                     </Modal>

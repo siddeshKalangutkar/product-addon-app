@@ -114,7 +114,7 @@ export async function createServer(
   app.get("/get-shop", verifyRequest(app), async (req, res) => {
     try{
       const session = await Shopify.Utils.loadCurrentSession(req, res, true);
-      console.log("session.shop: ", session.shop)
+      // console.log("session.shop: ", session.shop)
       res.status(200).send({shop: session.shop})
     }
     catch (err){
@@ -137,11 +137,11 @@ export async function createServer(
   app.post("/get-rules", async (req, res) => {
     try{
       let response_data = await get_rules(req.body.shop)
-      console.log("response_data: ", response_data)
+      // console.log("response_data: ", response_data)
       res.json(response_data)
     }
     catch (err){
-      console.log('Error at getting shop name', err)
+      console.log('Error at getting rule data', err)
       res.json({error: err})
     }
   });

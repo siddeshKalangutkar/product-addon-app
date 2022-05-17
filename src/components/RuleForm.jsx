@@ -5,7 +5,7 @@ import { ResourcePicker } from "@shopify/app-bridge-react";
 // import { AddonList } from "./AddonList";
 // import { AddonInput } from "./AddonInput";
 
-export function RuleForm({ formData, updateFormData }) {
+export function RuleForm({ formData, updateFormData, readonly }) {
     const [value, setValue] = useState(formData.name ? formData.name : "");
     const handleChange = useCallback((newValue) => {
         setValue(newValue), []
@@ -76,7 +76,7 @@ export function RuleForm({ formData, updateFormData }) {
     return (
         <FormLayout>
             <FormLayout>
-                <TextField label="Rule Title" value={value} onChange={handleChange} />
+                <TextField label="Rule Title" value={value} onChange={handleChange} readOnly={readonly} />
                 <p>Add rule for:</p>
                 <Button onClick={setOpenProductPicker} >Select Products</Button>
                 <Stack spacing="tight">{selectProductsTag}</Stack>
