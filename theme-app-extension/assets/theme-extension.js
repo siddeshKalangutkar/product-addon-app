@@ -81,7 +81,7 @@ async function render_popup(product_id, button) {
         <div class="addon-rule-container">
         <p class="addon-rule-title">${key}</p>
         `
-        if (arr[0].includes('collections')) {
+        if (arr[0].includes('collection')) {
             let collection_handle = arr[1].replace(/\[|\]|\;/gi, "")
             let addon_products_response = await fetch(`/collections/${collection_handle.trim()}/products.json`)
             let { products } = await addon_products_response.json()

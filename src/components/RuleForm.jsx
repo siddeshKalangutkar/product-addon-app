@@ -142,6 +142,7 @@ export function RuleForm({ formData, updateFormData, readonly, setDeletedProduct
                                 resourceType="Product"
                                 showVariants={false}
                                 open={openResourcepicker}
+                                showDraft = {false}
                                 // initialSelectionIds = {resourcepickerValue.length > 0 ? resourcepickerValue.map(item =>item.id) : []}
                                 onSelection={(resources) => handleResourcePickerSelection(resources)}
                                 onCancel={() => setOpenResourcepicker(false)}
@@ -152,6 +153,7 @@ export function RuleForm({ formData, updateFormData, readonly, setDeletedProduct
                             resourceType="Product"
                             showVariants={true}
                             open={openProductPicker}
+                            showDraft = {false}
                             // initialSelectionIds = {productpickerValue.length > 0 ? productpickerValue.map(item =>item.id) : []}
                             onSelection={(resources) => handleProductPicker(resources)}
                             onCancel={() => setOpenProductPicker(false)}
