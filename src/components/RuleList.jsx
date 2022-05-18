@@ -1,13 +1,29 @@
 import React from 'react';
-import { Card, Button, Modal, ButtonGroup, Stack, ResourceItem, ResourceList, TextStyle } from '@shopify/polaris';
+import { Card, Button, Modal, EmptyState, ButtonGroup, Stack, ResourceItem, ResourceList, TextStyle } from '@shopify/polaris';
 
-export function RuleList({ data, openModal, openDeleteModal }) {
+const img = 'https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg';
+
+export function RuleList({ data, openModal, openDeleteModal, setLoader, loader }) {
+    const emptyStateMarkup = !data.length > 0 ?(
+        <EmptyState
+            heading="No rules created yet"
+            action={{
+                content: "Add Rule",
+                onAction: () => { openModal({}, false) },
+            }}
+            image={img}
+            imageContained
+        >
+        </EmptyState>
+    ) : undefined;
 
     return (
         <Card>
             <ResourceList
                 resourceName={{ singular: 'Rule', plural: 'Rules' }}
                 items={data}
+                loading = {loader}
+                emptyState = {emptyStateMarkup}
                 renderItem={(item) => {
                     const { name } = item;
 
@@ -23,8 +39,8 @@ export function RuleList({ data, openModal, openDeleteModal }) {
                                 </Stack.Item>
                                 <Stack.Item>
                                     <ButtonGroup spacing="loose">
-                                        <Button plain onClick={() => { openModal(item,true)}}>Edit</Button>
-                                        <Button plain destructive onClick={()=>{ console.log("Delete cliked");openDeleteModal(item)}}>Delete</Button>
+                                        <Button plain onClick={() => { openModal(item, true) }}>Edit</Button>
+                                        <Button plain destructive onClick={() => { console.log("Delete cliked"); openDeleteModal(item) }}>Delete</Button>
                                     </ButtonGroup>
                                 </Stack.Item>
                             </Stack>

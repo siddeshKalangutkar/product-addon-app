@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { FormLayout, TextField, ChoiceList, Button, Stack, Tag } from "@shopify/polaris";
 import { ResourcePicker } from "@shopify/app-bridge-react";
 
@@ -21,12 +21,12 @@ export function RuleForm({ formData, updateFormData, readonly, setDeletedProduct
     }, []);
     const renderChildren = useCallback((isSelected) =>
         isSelected && (
-            <Button onClick={setOpenResourcepicker} >Add {selectedChoice}</Button>
+            <Button onClick={activateResourcePicker} >Add {selectedChoice}</Button>
         ), [selectedChoice]
     );
 
     const [openResourcepicker, setOpenResourcepicker] = useState(false);
-    const [resourcepickerValue, setResourcepickerValue] = useState((typeof formData.addons != 'undefined') && formData.addons.selection.length > 0 ? formData.addons.selection : []);
+    const [resourcepickerValue, setResourcepickerValue] = useState((typeof formData.addons != 'undefined') && formData.addons.selection.length > 0 ? formData.addons : {});
     const handleResourcePickerSelection = useCallback((value) => {
         setOpenResourcepicker(false)
         setResourcepickerValue(value)
@@ -40,7 +40,7 @@ export function RuleForm({ formData, updateFormData, readonly, setDeletedProduct
             setSelectedTags((previousTags) =>
                 previousTags.filter((previousTag) => previousTag !== tag),
             );
-            handleResourcePickerSelection({selection : formData.addons.selection.filter((item) => item.handle != tag) })
+            handleResourcePickerSelection({ selection: formData.addons.selection.filter((item) => item.handle != tag) })
         },
         [],
     );
@@ -56,9 +56,9 @@ export function RuleForm({ formData, updateFormData, readonly, setDeletedProduct
             setSelectProducts((previousTags) =>
                 previousTags.filter((previousTag) => previousTag !== tag),
             );
-            handleProductPicker({selection : formData.products.selection.filter((item) => item.handle != tag) })
-            if(readonly){
-                setDeletedProducts(prevState => [...prevState, {id: formData.products.selection.filter((item) => item.handle == tag).map(item => item.id).join(''), key: formData.name }])
+            handleProductPicker({ selection: formData.products.selection.filter((item) => item.handle != tag) })
+            if (readonly) {
+                setDeletedProducts(prevState => [...prevState, { id: formData.products.selection.filter((item) => item.handle == tag).map(item => item.id).join(''), key: formData.name }])
             }
         },
         [],
@@ -69,21 +69,37 @@ export function RuleForm({ formData, updateFormData, readonly, setDeletedProduct
         </Tag>
     ));
     const [openProductPicker, setOpenProductPicker] = useState(false);
-    const [productpickerValue, setproductpickerValue] = useState((typeof formData.products != 'undefined') && formData.products.selection.length > 0 ? formData.products.selection : []);
+    const [productpickerValue, setproductpickerValue] = useState((typeof formData.products != 'undefined') && formData.products.selection.length > 0 ? formData.products : {});
     const handleProductPicker = useCallback((value) => {
         setOpenProductPicker(false)
+        if (readonly) {
+            console.log("productPickerValue", productpickerValue)
+            let diffArray = productpickerValue.selection.filter(item => !value.selection.includes(item)).map(item => {return { id : item.id , key: formData.name}})
+            console.log("diffArray", diffArray)
+            setDeletedProducts(prevState => [...prevState, ...diffArray])
+        }
         setproductpickerValue(value)
         console.log("Productpicker", value)
         setSelectProducts(value.selection.map(product => product.title))
         updateFormData({ name: "products", value: value })
     }, [productpickerValue]);
 
+    const [activeProductPicker, setActiveProductPicker] = useState(true);
+    const activateProductPicker = async () => {
+        setActiveProductPicker(true)
+        setOpenProductPicker(true)
+    }
+    const activateResourcePicker = () => {
+        setActiveProductPicker(false)
+        setOpenResourcepicker(true)
+    }
+
     return (
         <FormLayout>
             <FormLayout>
                 <TextField label="Rule Title" value={value} onChange={handleChange} readOnly={readonly} />
                 <p>Add rule for:</p>
-                <Button onClick={setOpenProductPicker} >Select Products</Button>
+                <Button onClick={activateProductPicker} >Select Products</Button>
                 <Stack spacing="tight">{selectProductsTag}</Stack>
                 {/* <ResourcePicker
                     resourceType="Product"
@@ -110,7 +126,7 @@ export function RuleForm({ formData, updateFormData, readonly, setDeletedProduct
                 />
                 <Stack spacing="tight">{tagMarkup}</Stack>
                 {
-                    selectProducts.length > 0 ?
+                    !activeProductPicker ?
                         selectedChoice == "collection" ?
                             (<ResourcePicker
                                 resourceType="Collection"

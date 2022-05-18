@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { Card, Page, Layout, TextContainer, Image, Stack, Link, Banner, Heading, Modal, Button, EmptyState } from "@shopify/polaris";
+import { Card, Page, Layout, TextContainer, Image, Stack, Link, Banner, Heading, Modal, Button, EmptyState, Spinner } from "@shopify/polaris";
 import { RuleForm } from './RuleForm';
 import { RuleList } from "./RuleList";
 import { userLoggedInFetch } from "../App";
@@ -64,13 +64,24 @@ export function Dashboard() {
     const toggledeleteActive = useCallback(() => setDeleteActive((active) => !active), []);
 
     const [readonly, setReadonly] = useState(false)
+    const [loader, setLoader] = useState(false)
+    const [modalLoader, setModalLoader] = useState(false)
+
+    const [activeToast, setActiveToast] = useState(false)
+    const toggleToast = useCallback(
+        () => setActiveToast((activeToast) => !activeToast),
+        [],
+    );
+    const toastMarkup = activeToast ? (
+        <Toast content="Changes Saved" onDismiss={toggleToast} />
+    ) : null;
 
     const [ruleData, setRuleData] = useState([]);
 
     const saveData = async () => {
 
         console.log("deleted products", deletedProducts)
-
+        setModalLoader(true)
         let promise = new Promise((resolve) => resolve());
 
         if (deletedProducts.length > 0) {
@@ -107,7 +118,6 @@ export function Dashboard() {
 
         for (const product of formData.products.selection) {
             // console.log("product", product)
-
             let metafield_id_response = await get_metafield_id({
                 variables: {
                     "namespace": "app_meta",
@@ -142,6 +152,8 @@ export function Dashboard() {
         }
 
         toggleActive()
+        setModalLoader(false)
+        toggleToast()
         // console.log('save data called', formData)
         let shop_response = await fetch("/get-shop")
         let shop = await shop_response.json();
@@ -161,12 +173,14 @@ export function Dashboard() {
     }
 
     const renderRules = async () => {
+        setLoader(true)
         let shop_response = await fetch("/get-shop")
         let shop = await shop_response.json();
         let db_rules_response = await fetch("/get-rules", { method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(shop) })
         let db_rules = await db_rules_response.json()
         console.log("db_rules", db_rules)
         setRuleData(db_rules.data)
+        setLoader(false)
     }
 
     const openModal = async (data, editable) => {
@@ -194,6 +208,7 @@ export function Dashboard() {
     const [deleteData, setDeleteData] = useState({});
     const deleteFormData = async () => {
         // console.log(deleteData)
+        setModalLoader(true)
         let promise = new Promise((resolve) => resolve());
         for (const product of deleteData.products.selection) {
             // console.log("product", product)
@@ -223,6 +238,8 @@ export function Dashboard() {
             promise.then(() => (console.log("metafields deleted")));
         }
         toggledeleteActive()
+        setModalLoader(false)
+        toggleToast()
         let shop_response = await fetch("/get-shop")
         let { shop } = await shop_response.json();
         let data = { shop: shop, name: deleteData.name }
@@ -243,7 +260,7 @@ export function Dashboard() {
     const [get_metafield_id, metafield_id_res] = useLazyQuery(METAFIELD_ID);
     const [deleteMetafield, deleteMetaRes] = useMutation(DELETE_METAFIELD);
     const [mutateMetafield, { data, loading, error }] = useMutation(ADD_METAFIELD);
-    if (loading) return <Loading />;
+    // if (loading) return <Loading />;
     if (error) {
         console.warn(error);
         return <Banner status="critical">{error.message}</Banner>;
@@ -267,28 +284,28 @@ export function Dashboard() {
                     </Card>
                     <Card sectioned>
                         {
-                            ruleData.length > 0 ?
-                                (
-                                    <>
-                                        <TextContainer>
-                                            <Heading>Rules</Heading>
-                                            <RuleList data={ruleData} openModal={openModal} openDeleteModal={openDeleteModal} />
-                                        </TextContainer>
-                                    </>
-                                )
-                                :
-                                (
-                                    <EmptyState
-                                        heading="No rules created yet"
-                                        action={{
-                                            content: "Add Rule",
-                                            onAction: toggleActive,
-                                        }}
-                                        image={img}
-                                        imageContained
-                                    >
-                                    </EmptyState>
-                                )
+                            // ruleData.length > 0 ?
+                            (
+                                <>
+                                    <TextContainer>
+                                        <Heading>Rules</Heading>
+                                        <RuleList data={ruleData} openModal={openModal} openDeleteModal={openDeleteModal} setLoader={setLoader} loader={loader} />
+                                    </TextContainer>
+                                </>
+                            )
+                            // :
+                            // (
+                            //     <EmptyState
+                            //         heading="No rules created yet"
+                            //         action={{
+                            //             content: "Add Rule",
+                            //             onAction: toggleActive,
+                            //         }}
+                            //         image={img}
+                            //         imageContained
+                            //     >
+                            //     </EmptyState>
+                            // )
                         }
                     </Card>
 
@@ -298,6 +315,7 @@ export function Dashboard() {
                         open={active}
                         onClose={toggleActive}
                         title="Rule"
+                        loading={modalLoader}
                         primaryAction={{
                             content: 'Save',
                             onAction: saveData,
@@ -321,6 +339,7 @@ export function Dashboard() {
                         open={deleteActive}
                         onClose={toggledeleteActive}
                         title="Delete Rule"
+                        loading={modalLoader}
                         primaryAction={{
                             content: 'Delete',
                             destructive: true,
@@ -339,7 +358,7 @@ export function Dashboard() {
                             </Stack>
                         </Modal.Section>
                     </Modal>
-
+                    {toastMarkup}
                 </Layout.Section>
             </Layout>
         </Page>
