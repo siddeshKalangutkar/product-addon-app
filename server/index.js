@@ -17,6 +17,7 @@ const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 import cors from "cors";
 import draft_checkout from "./api/draftOrder.js";
 import {find_access_token, update_rule, get_rules, delete_rule} from "./db-fucntion.js"
+import {clear_data, clear_rules} from "./api/clearData.js"
 
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
@@ -57,6 +58,7 @@ export async function createServer(
     try {
       await Shopify.Webhooks.Registry.process(req, res);
       console.log(`Webhook processed, returned status code 200`);
+      await clear_data(req.headers['x-shopify-shop-domain'])
     } catch (error) {
       console.log(`Failed to process webhook: ${error}`);
       res.status(500).send(error.message);

@@ -136,3 +136,39 @@ export async function delete_rule(data){
         await client.close()
     }
 }
+
+export async function delete_account(data){
+    try {
+        await client.connect()
+        const db = client.db('ProductAddons')
+        const col = db.collection('Accounts')
+        const result = await col.deleteOne(data);
+        console.log("Deleted Account Successfully ", result)
+        return { success: true, data: result }
+    }
+    catch (err) {
+        console.log(err)
+        return { success: false, error: err }
+    }
+    finally {
+        await client.close()
+    }
+}
+
+export async function delete_all_rules(data){
+    try {
+        await client.connect()
+        const db = client.db('ProductAddons')
+        const col = db.collection('Rules')
+        const result = await col.deleteMany(data);
+        console.log("Deleted All Rules Successfully ", result)
+        return { success: true, data: result }
+    }
+    catch (err) {
+        console.log(err)
+        return { success: false, error: err }
+    }
+    finally {
+        await client.close()
+    }
+}
