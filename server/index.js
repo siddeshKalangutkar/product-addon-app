@@ -160,6 +160,18 @@ export async function createServer(
     }
   });
 
+  app.post("/delete-all-rules", verifyRequest(app), async (req, res) => {
+    try{
+      const session = await Shopify.Utils.loadCurrentSession(req, res, true);
+      await clear_rules(session.shop)
+      res.status(200).send({sucess: true})
+    }
+    catch (err){
+      console.log('Error at getting shop name', err)
+      res.status(500).send({error: err})
+    }
+  });
+
   app.use("/*", (req, res, next) => {
     const { shop } = req.query;
 

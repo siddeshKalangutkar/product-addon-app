@@ -63,6 +63,9 @@ export function Dashboard() {
     const [deleteActive, setDeleteActive] = useState(false);
     const toggledeleteActive = useCallback(() => setDeleteActive((active) => !active), []);
 
+    const [deleteAllActive, setdeleteAllActive] = useState(false);
+    const toggledeleteAllActive = useCallback(() => setdeleteAllActive((active) => !active), []);
+
     const [readonly, setReadonly] = useState(false)
     const [loader, setLoader] = useState(false)
     const [modalLoader, setModalLoader] = useState(false)
@@ -257,6 +260,22 @@ export function Dashboard() {
         setDeleteData(data)
     }
 
+    const deleteAllRules = async () => {
+        setModalLoader(true)
+        try{
+            await fetch("/delete-all-rules", { method: "POST", headers: { 'Content-Type': 'application/json' }})
+            await renderRules()
+        }
+        catch(error) {
+            console.log("error deleting all data", error)
+        }
+        finally{
+            setModalLoader(false)
+            toggledeleteAllActive()
+            toggleToast()
+        }
+    }
+
     const [get_metafield_id, metafield_id_res] = useLazyQuery(METAFIELD_ID);
     const [deleteMetafield, deleteMetaRes] = useMutation(DELETE_METAFIELD);
     const [mutateMetafield, { data, loading, error }] = useMutation(ADD_METAFIELD);
@@ -279,6 +298,9 @@ export function Dashboard() {
                         >
                             <Stack.Item fill>
                                 <Button onClick={() => { openModal({}, false) }}>Add Rule</Button>
+                            </Stack.Item>
+                            <Stack.Item>
+                                <Button onClick={toggledeleteAllActive} destructive>Delete All Rules</Button>
                             </Stack.Item>
                         </Stack>
                     </Card>
@@ -355,6 +377,30 @@ export function Dashboard() {
                         <Modal.Section>
                             <Stack vertical>
                                 <p>Delete the <b>{deleteData.name}</b> rule?</p>
+                            </Stack>
+                        </Modal.Section>
+                    </Modal>
+                    <Modal
+                        small
+                        open={deleteAllActive}
+                        onClose={toggledeleteAllActive}
+                        title="Delete Rule"
+                        loading={modalLoader}
+                        primaryAction={{
+                            content: 'Delete',
+                            destructive: true,
+                            onAction: deleteAllRules
+                        }}
+                        secondaryActions={[
+                            {
+                                content: 'Cancel',
+                                onAction: toggledeleteAllActive,
+                            },
+                        ]}
+                    >
+                        <Modal.Section>
+                            <Stack vertical>
+                                <p>Delete all the created rules?</p>
                             </Stack>
                         </Modal.Section>
                     </Modal>
