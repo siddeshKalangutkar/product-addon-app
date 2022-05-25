@@ -21,6 +21,7 @@ import { useState, useCallback } from "react";
 // import { EmptyStatePage } from "./components/EmptyStatePage";
 // import { ProductsPage } from "./components/ProductsPage";
 import { Dashboard } from "./components/Dashboard";
+import {Guide} from "./components/Guide"
 
 export default function App() {
   const [selection, setSelection] = useState([]);
@@ -64,11 +65,7 @@ export default function App() {
               { selected == 0 ? 
                   (<Dashboard/>)
                 :
-                  (
-                    <>
-                      <p>Installation Guide</p>
-                    </>
-                  )
+                  (<Guide/>)
               }
             </Tabs>
           </Page>
