@@ -3,6 +3,7 @@ import { Shopify } from "@shopify/shopify-api";
 import topLevelAuthRedirect from "../helpers/top-level-auth-redirect.js";
 
 import { update_access_token } from "../db-fucntion.js"
+// import planSubscription from "../api/subscriptionWebhook.js"
 
 export default function applyAuthMiddleware(app) {
   app.get("/auth", async (req, res) => {
@@ -73,6 +74,20 @@ export default function applyAuthMiddleware(app) {
 
       //Update Access token in DB
       await update_access_token(session.shop, session.accessToken)
+
+      //subscribe to plan ungrade webhook
+      // await planSubscription(session.accessToken, session.shop)
+      const sub_response = await Shopify.Webhooks.Registry.register({
+        shop: session.shop,
+        accessToken: session.accessToken,
+        topic: "APP_SUBSCRIPTIONS_UPDATE",
+        path: "/plan-subscribe",
+      })
+      if (!sub_response["APP_SUBSCRIPTIONS_UPDATE"].success) {
+        console.log(
+          `Failed to register APP_SUBSCRIPTIONS_UPDATE webhook: ${sub_response.result}`
+        );
+      }
 
       // Redirect to app with shop parameter upon auth
       res.redirect(`/?shop=${session.shop}&host=${host}`);

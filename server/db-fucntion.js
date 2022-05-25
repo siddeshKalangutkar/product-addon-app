@@ -172,3 +172,25 @@ export async function delete_all_rules(data){
         await client.close()
     }
 }
+
+export async function update_subscription_plan(shop_name, subscription_plan, subscription_plan_id) {
+    try {
+        await client.connect()
+        const db = client.db('ProductAddons')
+        const col = db.collection('Accounts')
+        let data = {
+            "subscriptionPlan": subscription_plan,
+            "subscriptionPlanId": subscription_plan_id
+        }
+        const result = await col.updateOne({ shop: shop_name }, { $set: data }, { upsert: true });
+        console.log("Updated Subscription Plan Successfully ", result)
+        return { success: true }
+    }
+    catch (err) {
+        console.log(err)
+        return { success: false, error: err }
+    }
+    finally {
+        await client.close()
+    }
+}

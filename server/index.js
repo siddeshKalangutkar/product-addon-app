@@ -16,7 +16,7 @@ const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
 import cors from "cors";
 import draft_checkout from "./api/draftOrder.js";
-import {find_access_token, update_rule, get_rules, delete_rule} from "./db-fucntion.js"
+import {find_access_token, update_rule, get_rules, delete_rule, update_subscription_plan} from "./db-fucntion.js"
 import {clear_data, clear_rules} from "./api/clearData.js"
 
 Shopify.Context.initialize({
@@ -37,6 +37,14 @@ Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
   path: "/webhooks",
   webhookHandler: async (topic, shop, body) => {
     delete ACTIVE_SHOPIFY_SHOPS[shop];
+  },
+});
+Shopify.Webhooks.Registry.addHandler("APP_SUBSCRIPTIONS_UPDATE", {
+  path: "/plan-subscribe",
+  webhookHandler: async (topic, shop, body) => {
+    let data = JSON.parse(body)
+    console.log("webhook sub body ", data)
+    await update_subscription_plan(shop, data.app_subscription.name, data.app_subscription.admin_graphql_api_id)
   },
 });
 
@@ -61,6 +69,17 @@ export async function createServer(
       await clear_data(req.headers['x-shopify-shop-domain'])
     } catch (error) {
       console.log(`Failed to process webhook: ${error}`);
+      res.status(500).send(error.message);
+    }
+  });
+
+  app.post("/plan-subscribe", async (req, res) => {
+    try {
+      await Shopify.Webhooks.Registry.process(req, res);
+      console.log(`Subscribe Webhook processed, returned status code 200`);
+      // res.status(200).send("success")
+    } catch (error) {
+      console.log(`Failed to process subscribe webhook: ${error}`);
       res.status(500).send(error.message);
     }
   });
