@@ -3,14 +3,15 @@ import { Card, Page, Layout, TextContainer, List, TextStyle, Stack, Link, Banner
 import { userLoggedInFetch } from "../App";
 import { useAppBridge } from "@shopify/app-bridge-react";
 
-export function PricePlan() {
+export function PricePlan({ activePlan }) {
     const app = useAppBridge();
     const fetch = userLoggedInFetch(app);
     const createPlan = async () => {
         console.log("Create plan")
-        let response = await fetch('/create-charge')
+        let url = activePlan ? "/create-charge" : "create-trial-charge"
+        let response = await fetch(url)
         let response_data = await response.json()
-        if(response_data.success){
+        if (response_data.success) {
             console.log(response_data.data)
             window.open(response_data.data)
         }
@@ -21,10 +22,10 @@ export function PricePlan() {
             <Layout>
                 <Layout.Section>
                     <Card title=""
-                        sectioned primaryFooterAction={{ 
+                        sectioned primaryFooterAction={{
                             content: 'Select Plan',
                             onAction: createPlan,
-                    
+
                         }}
                         footerActionAlignment="left"
                     >
@@ -40,6 +41,15 @@ export function PricePlan() {
                                 <List.Item>
                                     Quick customer support
                                 </List.Item>
+                                {!activePlan ?
+                                    (
+                                        <List.Item>
+                                            Get 5 days free trial
+                                        </List.Item>
+                                    )
+                                    :
+                                    ""
+                                }
                                 <List.Item>
                                     <TextStyle variation="strong" >$10/mo</TextStyle>
                                 </List.Item>

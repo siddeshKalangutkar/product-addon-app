@@ -12,6 +12,7 @@ export function MainWrapper() {
     const fetch = userLoggedInFetch(app);
 
     const [pricePlan, setPricePlan] = useState(true);
+    const [activePlan, setActivePlan] = useState(false);
 
     const [selected, setSelected] = useState(0);
     const handleTabChange = useCallback(
@@ -35,7 +36,8 @@ export function MainWrapper() {
         let account_info_response = await fetch("/get-account")
         let account_info = await account_info_response.json()
         console.log("account info", account_info)
-        !(account_info.subscriptionPlanId) ? setPricePlan(false) : setPricePlan(true)
+        !(account_info.subscriptionPlanId && account_info.status == "active") ? setPricePlan(false) : setPricePlan(true)
+        typeof account_info.status != "undefined" ? setActivePlan(true): "" ;
     }
     useEffect(() => {
         getAccount()
@@ -56,7 +58,7 @@ export function MainWrapper() {
                     )
                     :
                     (
-                        <PricePlan/>
+                        <PricePlan activePlan={activePlan} />
                     )
             }
 

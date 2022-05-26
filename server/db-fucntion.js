@@ -143,7 +143,7 @@ export async function delete_account(data){
         const db = client.db('ProductAddons')
         const col = db.collection('Accounts')
         // const result = await col.deleteOne(data);
-        const result = await col.updateOne({ shop: shop_name }, { $set: {status: "cancelled"}})
+        const result = await col.updateOne(data, { $set: {status: "cancelled"}})
         console.log("Deleted Account Successfully ", result)
         return { success: true, data: result }
     }

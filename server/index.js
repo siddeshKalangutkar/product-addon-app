@@ -206,6 +206,24 @@ export async function createServer(
   app.get("/create-charge", verifyRequest(app), async (req, res) => {
     try {
       const session = await Shopify.Utils.loadCurrentSession(req, res, true);
+      let result = await createSubscription(session.shop, false)
+      if (result.success == true) {
+        console.log("res", result.data)
+        res.status(200).send({success: true, data: result.data})
+      }
+      else {
+        throw result.data;
+      }
+    }
+    catch (err) {
+      console.log('Error creating charge', err)
+      res.status(500).send({ success: true, error: err })
+    }
+  });
+
+  app.get("/create-trial-charge", verifyRequest(app), async (req, res) => {
+    try {
+      const session = await Shopify.Utils.loadCurrentSession(req, res, true);
       let result = await createSubscription(session.shop, true)
       if (result.success == true) {
         console.log("res", result.data)
