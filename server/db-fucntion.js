@@ -142,7 +142,8 @@ export async function delete_account(data){
         await client.connect()
         const db = client.db('ProductAddons')
         const col = db.collection('Accounts')
-        const result = await col.deleteOne(data);
+        // const result = await col.deleteOne(data);
+        const result = await col.updateOne({ shop: shop_name }, { $set: {status: "cancelled"}})
         console.log("Deleted Account Successfully ", result)
         return { success: true, data: result }
     }
@@ -180,11 +181,29 @@ export async function update_subscription_plan(shop_name, subscription_plan, sub
         const col = db.collection('Accounts')
         let data = {
             "subscriptionPlan": subscription_plan,
-            "subscriptionPlanId": subscription_plan_id
+            "subscriptionPlanId": subscription_plan_id,
+            "status": "active"
         }
         const result = await col.updateOne({ shop: shop_name }, { $set: data }, { upsert: true });
         console.log("Updated Subscription Plan Successfully ", result)
         return { success: true }
+    }
+    catch (err) {
+        console.log(err)
+        return { success: false, error: err }
+    }
+    finally {
+        await client.close()
+    }
+}
+
+export async function find_account(shop_name) {
+    try {
+        await client.connect()
+        const db = client.db('ProductAddons')
+        const col = db.collection('Accounts')
+        const result = await col.findOne({ "shop": shop_name });
+        return { success: true, data: result }
     }
     catch (err) {
         console.log(err)

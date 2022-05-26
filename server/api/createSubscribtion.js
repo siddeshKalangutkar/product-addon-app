@@ -19,7 +19,7 @@ const SUBSCRIBTION = `
   }
 `;
 
-export async function createSubscription(shop_domain) {
+export async function createSubscription(shop_domain, trial) {
     try {
         let { accessToken } = await find_access_token(shop_domain)
         let url = `https://${shop_domain}/admin/api/2022-04/graphql.json`;
@@ -33,7 +33,7 @@ export async function createSubscription(shop_domain) {
         let body_data = {
             "name": "Super Trial",
             "returnUrl": `https://${shop_domain}/admin/apps/product_addons_app`,
-            "trialDays": 7,
+            "trialDays": trial ? 5 : 0,
             "test": true,
             "lineItems": [
                 {
@@ -52,10 +52,12 @@ export async function createSubscription(shop_domain) {
         param.body = JSON.stringify({ query: SUBSCRIBTION, variables: body_data })
         let subscribe_response = await fetch(url, param)
         let subscribe_data = await subscribe_response.json()
-        console.log("Subscribe data", JSON.stringify(subscribe_data))
+        console.log("Subscribe data", subscribe_data.data.appSubscriptionCreate.confirmationUrl)
+        return ({success: true, data: subscribe_data.data.appSubscriptionCreate.confirmationUrl})
     }
     catch (error) {
         console.log("error for creating subcribtion ", error)
+        ({success: false, data: error})
     }
 }
-createSubscription("simplecheckoutstore.myshopify.com")
+// createSubscription("simplecheckoutstore.myshopify.com")

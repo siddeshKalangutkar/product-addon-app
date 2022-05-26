@@ -16,8 +16,9 @@ const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
 import cors from "cors";
 import draft_checkout from "./api/draftOrder.js";
-import {find_access_token, update_rule, get_rules, delete_rule, update_subscription_plan} from "./db-fucntion.js"
-import {clear_data, clear_rules} from "./api/clearData.js"
+import { find_access_token, update_rule, get_rules, delete_rule, update_subscription_plan, find_account } from "./db-fucntion.js"
+import { clear_data, clear_rules } from "./api/clearData.js"
+import { createSubscription } from "./api/createSubscribtion.js"
 
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
@@ -84,6 +85,17 @@ export async function createServer(
     }
   });
 
+  app.get("/get-account", verifyRequest(app), async (req, res) => {
+    try {
+      const session = await Shopify.Utils.loadCurrentSession(req, res, true);
+      const data = await find_account(session.shop)
+      res.status(200).send(data.data);
+    }
+    catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
   app.get("/products-count", verifyRequest(app), async (req, res) => {
     const session = await Shopify.Utils.loadCurrentSession(req, res, true);
     const { Product } = await import(
@@ -120,74 +132,92 @@ export async function createServer(
 
   app.post("/api/checkout", cors(), async (req, res) => {
     // console.log("shop",Shopify.Context.SESSION_STORAGE)
-    try{
-      let {accessToken} = await find_access_token(req.body.shop)
+    try {
+      let { accessToken } = await find_access_token(req.body.shop)
       let url_data = await draft_checkout(req.body.data, accessToken)
       console.log('Check API successfull')
-      res.json({url : url_data})
+      res.json({ url: url_data })
     }
-    catch (err){
+    catch (err) {
       console.log('Error at Checkout API', err)
-      res.json({error: err})
+      res.json({ error: err })
     }
   });
 
   app.get("/get-shop", verifyRequest(app), async (req, res) => {
-    try{
+    try {
       const session = await Shopify.Utils.loadCurrentSession(req, res, true);
       // console.log("session.shop: ", session.shop)
-      res.status(200).send({shop: session.shop})
+      res.status(200).send({ shop: session.shop })
     }
-    catch (err){
+    catch (err) {
       console.log('Error at getting shop name', err)
-      res.status(500).send({error: err})
+      res.status(500).send({ error: err })
     }
   });
 
   app.post("/update-rule", async (req, res) => {
-    try{
+    try {
       let response_data = await update_rule(req.body)
       res.json(response_data)
     }
-    catch (err){
+    catch (err) {
       console.log('Error at Update Rule API', err)
-      res.json({error: err})
+      res.json({ error: err })
     }
   });
 
   app.post("/get-rules", async (req, res) => {
-    try{
+    try {
       let response_data = await get_rules(req.body.shop)
       // console.log("response_data: ", response_data)
       res.json(response_data)
     }
-    catch (err){
+    catch (err) {
       console.log('Error at getting rule data', err)
-      res.json({error: err})
+      res.json({ error: err })
     }
   });
 
   app.post("/delete-rule", async (req, res) => {
-    try{
+    try {
       let response_data = await delete_rule(req.body)
       // console.log("response_data: ", response_data)
       res.json(response_data)
     }
-    catch (err){
+    catch (err) {
       console.log('Error at getting rule data', err)
-      res.json({error: err})
+      res.json({ error: err })
     }
   });
 
   app.post("/delete-all-rules", verifyRequest(app), async (req, res) => {
-    try{
+    try {
       const session = await Shopify.Utils.loadCurrentSession(req, res, true);
       await clear_rules(session.shop)
-      res.status(200).send({sucess: true})
+      res.status(200).send({ sucess: true })
     }
-    catch (err){
+    catch (err) {
       console.log('Error at getting shop name', err)
-      res.status(500).send({error: err})
+      res.status(500).send({ error: err })
+    }
+  });
+
+  app.get("/create-charge", verifyRequest(app), async (req, res) => {
+    try {
+      const session = await Shopify.Utils.loadCurrentSession(req, res, true);
+      let result = await createSubscription(session.shop, true)
+      if (result.success == true) {
+        console.log("res", result.data)
+        res.status(200).send({success: true, data: result.data})
+      }
+      else {
+        throw result.data;
+      }
+    }
+    catch (err) {
+      console.log('Error creating charge', err)
+      res.status(500).send({ success: true, error: err })
     }
   });
 

@@ -20,29 +20,10 @@ import { useState, useCallback } from "react";
 // import { HomePage } from "./components/HomePage";
 // import { EmptyStatePage } from "./components/EmptyStatePage";
 // import { ProductsPage } from "./components/ProductsPage";
-import { Dashboard } from "./components/Dashboard";
-import {Guide} from "./components/Guide"
+import { MainWrapper } from "./components/MainWrapper";
 
 export default function App() {
   const [selection, setSelection] = useState([]);
-  
-  const [selected, setSelected] = useState(0);
-  const handleTabChange = useCallback(
-    (selectedTabIndex) => setSelected(selectedTabIndex),
-    [],
-  );
-  const tabs = [
-    {
-      id: 'dashboard',
-      content: 'Dashboard',
-      panelID: 'dashboard',
-    },
-    {
-      id: 'install',
-      content: 'Installation Guide',
-      panelID: 'install'
-    }
-  ]
 
   return (
     <PolarisProvider i18n={translations}>
@@ -61,13 +42,7 @@ export default function App() {
             <EmptyStatePage setSelection={setSelection} />
           )} */}
           <Page fullWidth>
-            <Tabs tabs={tabs} selected={selected} onSelect={handleTabChange}>
-              { selected == 0 ? 
-                  (<Dashboard/>)
-                :
-                  (<Guide/>)
-              }
-            </Tabs>
+            <MainWrapper/>
           </Page>
         </MyProvider>
       </AppBridgeProvider>
