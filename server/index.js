@@ -44,7 +44,7 @@ Shopify.Webhooks.Registry.addHandler("APP_SUBSCRIPTIONS_UPDATE", {
   webhookHandler: async (topic, shop, body) => {
     let data = JSON.parse(body)
     console.log("webhook sub body ", data)
-    await update_subscription_plan(shop, data.app_subscription.name, data.app_subscription.admin_graphql_api_id)
+    data.app_subscription.status == "ACTIVE" ? await update_subscription_plan(shop, data.app_subscription.name, data.app_subscription.admin_graphql_api_id) : "";
   },
 });
 

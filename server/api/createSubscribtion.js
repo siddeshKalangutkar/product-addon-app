@@ -10,6 +10,9 @@ const SUBSCRIBTION = `
       }
       appSubscription {
         id
+        lineItems{
+            id
+        }
       }
       confirmationUrl
     }
@@ -39,7 +42,8 @@ export async function createSubscription(shop_domain) {
                             "price": {
                                 "amount": 10,
                                 "currencyCode": "USD"
-                            }
+                            },
+                            "interval" : "EVERY_30_DAYS"
                         }
                     }
                 }
@@ -48,7 +52,7 @@ export async function createSubscription(shop_domain) {
         param.body = JSON.stringify({ query: SUBSCRIBTION, variables: body_data })
         let subscribe_response = await fetch(url, param)
         let subscribe_data = await subscribe_response.json()
-        console.log("Subscribe data", subscribe_data)
+        console.log("Subscribe data", JSON.stringify(subscribe_data))
     }
     catch (error) {
         console.log("error for creating subcribtion ", error)
