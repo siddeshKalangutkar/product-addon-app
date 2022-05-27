@@ -22,7 +22,7 @@ function add_products(button, product_input_data = {}) {
     let addon_total_price = 0;
     let addon_titles = [];
     addon_info_array.reverse().forEach(addon_info => {
-        product_data_obj.properties[addon_info.title] = addon_info.price
+        product_data_obj.properties[addon_info.title] = window.pdtAddOnCurrency+" "+addon_info.price
         addon_total_price += parseInt(addon_info.price)
         addon_titles.push(addon_info.title)
     })
@@ -125,9 +125,9 @@ function format_html(product) {
             </span>
         </span>
         <span class="price">
-            (+${window.pdtAddOnCurrency + "" + product.variants[0].price})
+            (+${window.pdtAddOnCurrency + "" + parseFloat(product.variants[0].price)})
             <div class="addon-checkbox">
-                <input type="checkbox" class="addon-input" value="${product.variants[0].id}" data-addon-title="${product.title}" data-addon-price="${product.variants[0].price}" ${!product.variants[0].available ? "disabled" : ""}>
+                <input type="checkbox" class="addon-input" value="${product.variants[0].id}" data-addon-title="${product.title}" data-addon-price="${parseFloat(product.variants[0].price)}" ${!product.variants[0].available ? "disabled" : ""}>
                 <span class="addon-ctm-checkbox"></span>
             </div>
             ${!product.variants[0].available ? '<span class="addon-ofs">Out of stock</span>' : ''}
