@@ -21,7 +21,8 @@
 }
 .addon-modal {
     width: 90%;
-    max-width: 400px;
+    max-width: 450px;
+    font-size: 16px;
 }
 .addon-modal-body{
     display: flex;
@@ -193,7 +194,7 @@
 }
 
 .addon-modal .addon-rule-item .addon-info {
-  max-width: 70%;
+  max-width: 64%;
   align-items: flex-start;
 }
 .addon-modal .addon-rule-item .addon-text-info {
@@ -213,6 +214,7 @@
 }
 .addon-modal .addon-rule-item .price{
   position: relative;
+  font-size: 16px;
 }
 .addon-checkbox input:disabled ~ .addon-ctm-checkbox:before {
   content: '\00d7';
