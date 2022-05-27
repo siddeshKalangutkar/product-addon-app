@@ -90,9 +90,19 @@
 .addon-modal .addon-rule-title:first-child {
   margin-top: 0px;
 }
-  .addon-modal .addon-rule-item .name{
-    font-weight:bold;
-  }
+.addon-modal .addon-rule-item .name{
+  font-weight:bold;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.addon-modal .addon-rule-item .description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 @media(min-width:769px){
   /* .addon-modal .addon-atc:hover{
     background-color: #ffffff;

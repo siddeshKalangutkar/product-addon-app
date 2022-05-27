@@ -7,10 +7,14 @@ function add_products(button, product_input_data = {}) {
     add_spinner(button)
     let product_id = product_input_data.id ? product_input_data.id : document.querySelector('input[name=id]').value;  //selected product variant id
     let product_quantity = product_input_data.quantity ? product_input_data.quantity : document.querySelector('input[name=quantity]').value;  //selected quantity
+
+    let addition_line_properties = product_input_data.properties ? product_input_data.properties : [...document.querySelectorAll("input[type=text][name*='properties'], input[type=hidden][name*='properties'], input[type=number][name*='properties'], input[type=radio][name*='properties']:checked, input[type=checkbox][name*='properties']:checked, select[ name*='properties']")].map( item => { return { [ item.getAttribute("name").replace(/properties\[|\]/gi, "") ] : item.value}});  //additional properties
+
     let addon_checkboxes = document.querySelectorAll('.addon-input:checked');
     let addon_checkboxes_array = [...addon_checkboxes];
     let addon_ids = addon_checkboxes_array.map(checkbox => checkbox.value);  //selected addons id
-    let unique_key = product_id + "" + addon_ids.join("") //unique key for line item relation
+    let key_add = addition_line_properties.length > 0 ? addition_line_properties.map( property => Object.values(property)[0] ).join("") : "";
+    let unique_key = product_id + "" + addon_ids.join("") + key_add;  //unique key for line item relation
     let product_data = addon_ids.map(addon_id => { return { id: addon_id, quantity: product_quantity, properties: { _u_key: unique_key } } })  //data for cart w/o main product
 
     // let unique_key = product_id;
@@ -30,8 +34,13 @@ function add_products(button, product_input_data = {}) {
     product_data_obj.properties["_addon_titles"] = addon_titles.toString();  //addon titles in line-item properties
     console.log('single product data', product_data_obj)//TODO
 
+    //additional properties
+    addition_line_properties.length > 0 ? addition_line_properties.forEach( property => product_data_obj.properties[Object.keys(property)[0]] = Object.values(property)[0] ) : "";
+
     product_data.push(product_data_obj)  //data for cart w/ main product
     let data = { items: product_data }  //data format
+
+    console.log("data",data)
 
     fetch('/cart/add.js', {
         body: JSON.stringify(data),
