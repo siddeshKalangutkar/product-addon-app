@@ -5,41 +5,41 @@ const uri = process.env.DB_URI;
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-async function searchDbFunction() {
-    try {
-        await client.connect()
-        const db = client.db('ProductAddons')
-        const col = db.collection('Accounts')
-        const myDoc = await col.findOne({ "shop": "newShow.com" });
-        console.log(myDoc)
-    }
-    catch (err) {
-        console.log(err)
-    }
-    finally {
-        await client.close()
-    }
-}
+// async function searchDbFunction() {
+//     try {
+//         await client.connect()
+//         const db = client.db('ProductAddons')
+//         const col = db.collection('Accounts')
+//         const myDoc = await col.findOne({ "shop": "newShow.com" });
+//         console.log(myDoc)
+//     }
+//     catch (err) {
+//         console.log(err)
+//     }
+//     finally {
+//         await client.close()
+//     }
+// }
 
-async function addDbFunction() {
-    try {
-        await client.connect()
-        const db = client.db('ProductAddons')
-        const col = db.collection('Accounts')
-        let data = {
-            "shop": "newShow.com",
-            "accessToken": "xy1234d"
-        }
-        const added = await col.insertOne(data);
-        console.log("Added successfully ", added)
-    }
-    catch (err) {
-        console.log(err)
-    }
-    finally {
-        await client.close()
-    }
-}
+// async function addDbFunction() {
+//     try {
+//         await client.connect()
+//         const db = client.db('ProductAddons')
+//         const col = db.collection('Accounts')
+//         let data = {
+//             "shop": "newShow.com",
+//             "accessToken": "xy1234d"
+//         }
+//         const added = await col.insertOne(data);
+//         console.log("Added successfully ", added)
+//     }
+//     catch (err) {
+//         console.log(err)
+//     }
+//     finally {
+//         await client.close()
+//     }
+// }
 
 export async function update_access_token(shop_name, token_data) {
     try {
@@ -104,7 +104,6 @@ export async function get_rules(data) {
         await client.connect()
         const db = client.db('ProductAddons')
         const col = db.collection('Rules')
-        console.log("shop", data)
         const result = col.find({ shop: data });
         const rules = await result.toArray();
         console.log("Fetched Rules Successfully ", rules)

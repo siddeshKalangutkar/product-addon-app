@@ -35,7 +35,6 @@ export function MainWrapper() {
     const getAccount = async () => {
         let account_info_response = await fetch("/get-account")
         let account_info = await account_info_response.json()
-        console.log("account info", account_info)
         !(account_info.subscriptionPlanId && account_info.status == "active") ? setPricePlan(false) : setPricePlan(true)
         typeof account_info.status != "undefined" ? setActivePlan(true): "" ;
     }

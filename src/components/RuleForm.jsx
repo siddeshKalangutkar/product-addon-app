@@ -14,7 +14,7 @@ export function RuleForm({ formData, updateFormData, readonly, setDeletedProduct
 
     const [selectedChoice, setSelectedChoice] = useState(formData.addon_type && formData.addon_type.length > 0 ? [formData.addon_type[0]] : ['none']);
     const handleChoiceListChange = useCallback((value) => {
-        console.log("value chocice change", value)
+        // console.log("value chocice change", value)
         setSelectedChoice(value)
         updateFormData({ name: "addon_type", value: value })
         setSelectedTags([])
@@ -73,13 +73,13 @@ export function RuleForm({ formData, updateFormData, readonly, setDeletedProduct
     const handleProductPicker = useCallback((value) => {
         setOpenProductPicker(false)
         if (readonly) {
-            console.log("productPickerValue", productpickerValue)
+            // console.log("productPickerValue", productpickerValue)
             let diffArray = productpickerValue.selection.filter(item => !value.selection.includes(item)).map(item => {return { id : item.id , key: formData.name}})
-            console.log("diffArray", diffArray)
+            // console.log("diffArray", diffArray)
             setDeletedProducts(prevState => [...prevState, ...diffArray])
         }
         setproductpickerValue(value)
-        console.log("Productpicker", value)
+        // console.log("Productpicker", value)
         setSelectProducts(value.selection.map(product => product.title))
         updateFormData({ name: "products", value: value })
     }, [productpickerValue]);

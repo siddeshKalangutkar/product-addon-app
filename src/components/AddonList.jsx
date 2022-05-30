@@ -9,7 +9,7 @@ export function AddonList() {
         for (var key in addonData) {
             setAddonArray( addonArray => [...addonArray, {title: key, price: addonData[key]} ] )
         }
-        console.log(addonArray)
+        // console.log(addonArray)
     }, [addonData])
 
     return (

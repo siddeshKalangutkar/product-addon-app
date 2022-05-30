@@ -7,12 +7,10 @@ export function PricePlan({ activePlan }) {
     const app = useAppBridge();
     const fetch = userLoggedInFetch(app);
     const createPlan = async () => {
-        console.log("Create plan")
         let url = activePlan ? "/create-charge" : "create-trial-charge"
         let response = await fetch(url)
         let response_data = await response.json()
         if (response_data.success) {
-            console.log(response_data.data)
             window.open(response_data.data)
         }
     }

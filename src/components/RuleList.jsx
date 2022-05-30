@@ -40,7 +40,7 @@ export function RuleList({ data, openModal, openDeleteModal, setLoader, loader }
                                 <Stack.Item>
                                     <ButtonGroup spacing="loose">
                                         <Button plain onClick={() => { openModal(item, true) }}>Edit</Button>
-                                        <Button plain destructive onClick={() => { console.log("Delete cliked"); openDeleteModal(item) }}>Delete</Button>
+                                        <Button plain destructive onClick={() => { openDeleteModal(item) }}>Delete</Button>
                                     </ButtonGroup>
                                 </Stack.Item>
                             </Stack>

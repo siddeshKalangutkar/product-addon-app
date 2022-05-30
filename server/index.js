@@ -44,7 +44,6 @@ Shopify.Webhooks.Registry.addHandler("APP_SUBSCRIPTIONS_UPDATE", {
   path: "/plan-subscribe",
   webhookHandler: async (topic, shop, body) => {
     let data = JSON.parse(body)
-    console.log("webhook sub body ", data)
     data.app_subscription.status == "ACTIVE" ? await update_subscription_plan(shop, data.app_subscription.name, data.app_subscription.admin_graphql_api_id) : "";
   },
 });
@@ -78,7 +77,6 @@ export async function createServer(
     try {
       await Shopify.Webhooks.Registry.process(req, res);
       console.log(`Subscribe Webhook processed, returned status code 200`);
-      // res.status(200).send("success")
     } catch (error) {
       console.log(`Failed to process subscribe webhook: ${error}`);
       res.status(500).send(error.message);
@@ -130,24 +128,22 @@ export async function createServer(
     next();
   });
 
-  app.post("/api/checkout", cors(), async (req, res) => {
-    // console.log("shop",Shopify.Context.SESSION_STORAGE)
-    try {
-      let { accessToken } = await find_access_token(req.body.shop)
-      let url_data = await draft_checkout(req.body.data, accessToken)
-      console.log('Check API successfull')
-      res.json({ url: url_data })
-    }
-    catch (err) {
-      console.log('Error at Checkout API', err)
-      res.json({ error: err })
-    }
-  });
+  // app.post("/api/checkout", cors(), async (req, res) => {
+  //   try {
+  //     let { accessToken } = await find_access_token(req.body.shop)
+  //     let url_data = await draft_checkout(req.body.data, accessToken)
+  //     console.log('Check API successfull')
+  //     res.json({ url: url_data })
+  //   }
+  //   catch (err) {
+  //     console.log('Error at Checkout API', err)
+  //     res.json({ error: err })
+  //   }
+  // });
 
   app.get("/get-shop", verifyRequest(app), async (req, res) => {
     try {
       const session = await Shopify.Utils.loadCurrentSession(req, res, true);
-      // console.log("session.shop: ", session.shop)
       res.status(200).send({ shop: session.shop })
     }
     catch (err) {
@@ -170,7 +166,6 @@ export async function createServer(
   app.post("/get-rules", async (req, res) => {
     try {
       let response_data = await get_rules(req.body.shop)
-      // console.log("response_data: ", response_data)
       res.json(response_data)
     }
     catch (err) {
@@ -182,11 +177,10 @@ export async function createServer(
   app.post("/delete-rule", async (req, res) => {
     try {
       let response_data = await delete_rule(req.body)
-      // console.log("response_data: ", response_data)
       res.json(response_data)
     }
     catch (err) {
-      console.log('Error at getting rule data', err)
+      console.log('Error at deleting rule data', err)
       res.json({ error: err })
     }
   });
@@ -198,7 +192,7 @@ export async function createServer(
       res.status(200).send({ sucess: true })
     }
     catch (err) {
-      console.log('Error at getting shop name', err)
+      console.log('Error at getting deleting all rules', err)
       res.status(500).send({ error: err })
     }
   });
@@ -208,7 +202,6 @@ export async function createServer(
       const session = await Shopify.Utils.loadCurrentSession(req, res, true);
       let result = await createSubscription(session.shop, false)
       if (result.success == true) {
-        console.log("res", result.data)
         res.status(200).send({success: true, data: result.data})
       }
       else {
@@ -226,7 +219,6 @@ export async function createServer(
       const session = await Shopify.Utils.loadCurrentSession(req, res, true);
       let result = await createSubscription(session.shop, true)
       if (result.success == true) {
-        console.log("res", result.data)
         res.status(200).send({success: true, data: result.data})
       }
       else {
@@ -234,7 +226,7 @@ export async function createServer(
       }
     }
     catch (err) {
-      console.log('Error creating charge', err)
+      console.log('Error creating trial charge', err)
       res.status(500).send({ success: true, error: err })
     }
   });

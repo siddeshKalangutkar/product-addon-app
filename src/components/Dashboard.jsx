@@ -82,15 +82,11 @@ export function Dashboard() {
     const [ruleData, setRuleData] = useState([]);
 
     const saveData = async () => {
-
-        console.log("deleted products", deletedProducts)
         setModalLoader(true)
         let promise = new Promise((resolve) => resolve());
 
         if (deletedProducts.length > 0) {
             for (const product of deletedProducts) {
-                // console.log("product", product)
-
                 let metafield_id_response = await get_metafield_id({
                     variables: {
                         "namespace": "app_meta",
@@ -98,13 +94,11 @@ export function Dashboard() {
                         "key": product.key
                     }
                 })
-                console.log("metafield_id ", metafield_id_response)
                 let metafield_id = metafield_id_response.data.product.metafield ? metafield_id_response.data.product.metafield.id : null;
 
                 const metaInput = {
                     id: metafield_id
                 };
-                console.log("metaInput", metaInput)
                 promise = promise.then(() =>
                     deleteMetafield({
                         variables: { input: metaInput },
@@ -114,13 +108,11 @@ export function Dashboard() {
             if (promise) {
                 promise.then(() => {
                     setDeletedProducts([])
-                    console.log("metafields added");
                 });
             }
         }
 
         for (const product of formData.products.selection) {
-            // console.log("product", product)
             let metafield_id_response = await get_metafield_id({
                 variables: {
                     "namespace": "app_meta",
@@ -128,7 +120,6 @@ export function Dashboard() {
                     "key": formData.name
                 }
             })
-            console.log("metafield_id ", metafield_id_response)
             let metafield_id = metafield_id_response.data.product.metafield ? metafield_id_response.data.product.metafield.id : null;
 
             const productInput = {
@@ -143,7 +134,6 @@ export function Dashboard() {
                 ]
             };
             metafield_id ? productInput.metafields[0].id = metafield_id : "";
-            console.log("productInput", productInput)
             promise = promise.then(() =>
                 mutateMetafield({
                     variables: { input: productInput },
@@ -157,19 +147,15 @@ export function Dashboard() {
         toggleActive()
         setModalLoader(false)
         toggleToast()
-        // console.log('save data called', formData)
         let shop_response = await fetch("/get-shop")
         let shop = await shop_response.json();
-        // console.log("shop", shop)
         let data = formData
         data["shop"] = shop.shop
         delete data._id
-        console.log("data", data)
 
         fetch("/update-rule", { method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
             .then(res => res.json())
             .then(json => {
-                console.log(json)
                 renderRules()
             })
             .catch(error => console.log(error))
@@ -181,7 +167,6 @@ export function Dashboard() {
         let shop = await shop_response.json();
         let db_rules_response = await fetch("/get-rules", { method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(shop) })
         let db_rules = await db_rules_response.json()
-        console.log("db_rules", db_rules)
         setRuleData(db_rules.data)
         setLoader(false)
     }
@@ -205,17 +190,13 @@ export function Dashboard() {
             // Trimming any whitespace
             [e.name]: e.value
         }));
-        console.log("Updated form data", formData)
     };
 
     const [deleteData, setDeleteData] = useState({});
     const deleteFormData = async () => {
-        // console.log(deleteData)
         setModalLoader(true)
         let promise = new Promise((resolve) => resolve());
         for (const product of deleteData.products.selection) {
-            // console.log("product", product)
-
             let metafield_id_response = await get_metafield_id({
                 variables: {
                     "namespace": "app_meta",
@@ -223,14 +204,12 @@ export function Dashboard() {
                     "key": deleteData.name
                 }
             })
-            console.log("metafield_id ", metafield_id_response)
             let metafield_id = metafield_id_response.data.product.metafield ? metafield_id_response.data.product.metafield.id : null;
 
             const metaInput = {
                 id: metafield_id
             };
 
-            console.log("productInput", metaInput)
             promise = promise.then(() =>
                 deleteMetafield({
                     variables: { input: metaInput },
@@ -246,11 +225,9 @@ export function Dashboard() {
         let shop_response = await fetch("/get-shop")
         let { shop } = await shop_response.json();
         let data = { shop: shop, name: deleteData.name }
-        console.log("data", data)
         fetch("/delete-rule", { method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
             .then(res => res.json())
             .then(json => {
-                console.log(json)
                 renderRules()
             })
             .catch(error => console.log(error))
