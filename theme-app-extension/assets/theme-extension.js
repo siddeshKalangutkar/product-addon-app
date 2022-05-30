@@ -1,5 +1,3 @@
-console.log("Theme app extension js")//TODO
-
 // adding products to cart with selected addons
 let addon_atc = document.querySelector(".addon-atc")
 addon_atc ? addon_atc.addEventListener("click", add_products) : "";
@@ -8,12 +6,12 @@ function add_products(button, product_input_data = {}) {
     let product_id = product_input_data.id ? product_input_data.id : document.querySelector('input[name=id]').value;  //selected product variant id
     let product_quantity = product_input_data.quantity ? product_input_data.quantity : document.querySelector('input[name=quantity]').value;  //selected quantity
 
-    let addition_line_properties = product_input_data.properties ? product_input_data.properties : [...document.querySelectorAll("input[type=text][name*='properties'], input[type=hidden][name*='properties'], input[type=number][name*='properties'], input[type=radio][name*='properties']:checked, input[type=checkbox][name*='properties']:checked, select[ name*='properties']")].map( item => { return { [ item.getAttribute("name").replace(/properties\[|\]/gi, "") ] : item.value}});  //additional properties
+    let addition_line_properties = product_input_data.properties ? product_input_data.properties : [...document.querySelectorAll("input[type=text][name*='properties'], input[type=hidden][name*='properties'], input[type=number][name*='properties'], input[type=radio][name*='properties']:checked, input[type=checkbox][name*='properties']:checked, select[ name*='properties']")].map(item => { return { [item.getAttribute("name").replace(/properties\[|\]/gi, "")]: item.value } });  //additional properties
 
     let addon_checkboxes = document.querySelectorAll('.addon-input:checked');
     let addon_checkboxes_array = [...addon_checkboxes];
     let addon_ids = addon_checkboxes_array.map(checkbox => checkbox.value);  //selected addons id
-    let key_add = addition_line_properties.length > 0 ? addition_line_properties.map( property => Object.values(property)[0] ).join("") : "";
+    let key_add = addition_line_properties.length > 0 ? addition_line_properties.map(property => Object.values(property)[0]).join("") : "";
     let unique_key = product_id + "" + addon_ids.join("") + key_add;  //unique key for line item relation
     let product_data = addon_ids.map(addon_id => { return { id: addon_id, quantity: product_quantity, properties: { _u_key: unique_key } } })  //data for cart w/o main product
 
@@ -21,26 +19,22 @@ function add_products(button, product_input_data = {}) {
     // let product_data = [];
 
     let addon_info_array = addon_checkboxes_array.map(checkbox => { return { price: checkbox.getAttribute('data-addon-price'), title: checkbox.getAttribute('data-addon-title') } });  //addon price and title
-    console.log('info_array', addon_info_array)//TODO
     let product_data_obj = { id: product_id, quantity: product_quantity, properties: { _u_key: unique_key } }
     let addon_total_price = 0;
     let addon_titles = [];
     addon_info_array.reverse().forEach(addon_info => {
-        product_data_obj.properties[addon_info.title] = window.pdtAddOnCurrency+" "+addon_info.price
+        product_data_obj.properties[addon_info.title] = window.pdtAddOnCurrency + " " + addon_info.price
         addon_total_price += parseInt(addon_info.price)
         addon_titles.push(addon_info.title)
     })
     product_data_obj.properties["_addon_price"] = addon_total_price  //addon total price in line-item property
     product_data_obj.properties["_addon_titles"] = addon_titles.toString();  //addon titles in line-item properties
-    console.log('single product data', product_data_obj)//TODO
 
     //additional properties
-    addition_line_properties.length > 0 ? addition_line_properties.forEach( property => product_data_obj.properties[Object.keys(property)[0]] = Object.values(property)[0] ) : "";
+    addition_line_properties.length > 0 ? addition_line_properties.forEach(property => product_data_obj.properties[Object.keys(property)[0]] = Object.values(property)[0]) : "";
 
     product_data.push(product_data_obj)  //data for cart w/ main product
     let data = { items: product_data }  //data format
-
-    console.log("data",data)
 
     fetch('/cart/add.js', {
         body: JSON.stringify(data),
@@ -53,13 +47,11 @@ function add_products(button, product_input_data = {}) {
     }).then((response) => {
         return response.json();
     }).then((json) => {
-        //products added successfully
-        if (json.status){
-            console.log("Cart error",json)
+        if (json.status) {
+            console.log("Cart error", json)
             document.querySelector('.cart-error').innerHTML = json.description;
         }
-        else{
-            console.log('products added successfully', json)//TODO
+        else {
             document.getElementById('product_addon_app').classList.remove("active");
             window.location.href = "/cart";
         }
@@ -85,7 +77,6 @@ async function render_popup(product_id, button) {
     let x = window.pdtJSON[product_id]
     for (let key in x) {
         let arr = x[key].split("|")
-        console.log(arr)//TODO
         html_section += `
         <div class="addon-rule-container">
         <p class="addon-rule-title">${key}</p>
@@ -95,18 +86,15 @@ async function render_popup(product_id, button) {
             let addon_products_response = await fetch(`/collections/${collection_handle.trim()}/products.json`)
             let { products } = await addon_products_response.json()
             for (const product of products) {
-                console.log("collections", product)
                 html_section += format_html(product)
             }
         }
         else {
-            console.log("products")//TODO
             let product_handle_string = arr[1].replace(/\[|\]/gi, "")
             let product_handles = product_handle_string.split(";")
             for (const handle of product_handles) {
                 let addon_response = await fetch(`/products/${handle.trim()}.js`)
                 let product = await addon_response.json()
-                console.log("products", product)
                 html_section += format_product_html(product)
             }
         }
@@ -117,8 +105,7 @@ async function render_popup(product_id, button) {
     <button class="addon-atc">Add To Cart</button>
     `
     document.querySelector('.addon-modal-body').innerHTML = html_section;
-    document.querySelector(".addon-atc").addEventListener("click", function(){ add_products(document.querySelector(".addon-atc")) , false })
-    console.log(html_section)//TODO
+    document.querySelector(".addon-atc").addEventListener("click", function () { add_products(document.querySelector(".addon-atc")), false })
     document.getElementById('product_addon_app').classList.add("active")
     remove_spinner(button)
 }
@@ -168,13 +155,12 @@ function format_product_html(product) {
 }
 
 function add_spinner(button) {
-    console.log("passed button", button)
     const spinner_code_block = `<div class="loading-overlay"><div class="loading-overlay__spinner"><svg height="20" width="20" aria-hidden="true" focusable="false" role="presentation" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg"><circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle></svg></div></div>`
     button.classList.add("loading-spinner");
     button.innerHTML += spinner_code_block;
 }
 
-function remove_spinner(button){
+function remove_spinner(button) {
     button.querySelector('.loading-overlay').remove();
     button.classList.remove('loading-spinner')
 }

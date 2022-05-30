@@ -128,15 +128,11 @@
                     for(j = 0 ; j < price_elements.length ; j++ ){
                         //price_elements[j].innerHTML = "{{ 0 | money_with_currency | money_without_trailing_zeros | remove: '0' }} " + price_array[i];
                     }
-                    console.log(i + ". " + "main product")
 
                     //change
                     let u_key = line_items[i].properties._u_key
                     let line_item_quantity = line_items[i].quantity
-                    console.log("uk", u_key)
-                    console.log("quantity", line_item_quantity)
                     let changeLineArray = line_items.filter((item)=> { return item.properties && item.properties._u_key == u_key && item.quantity != line_item_quantity } ).map((item)=> item.key)
-                    console.log("changeVar", changeLineArray)
                     for (k = 0 ; k < changeLineArray.length ; k++ ){
                         update_url = update_url + "updates[" + changeLineArray[k] + "]=" + line_item_quantity + "&"
                         update_url_flag = true
@@ -144,8 +140,6 @@
                 }
                 else{
                     //cart_items[i].style.display = "none";
-                    
-                    console.log(i + ". " + "addon")
                     if(line_items[i].properties && line_items[i].properties._u_key){
                         let quantity_update_btn_list = cart_items[i].querySelectorAll("{{block.settings.quanitity_selector}}, {{block.settings.delete_selector}}");
                         let quantity_update_btns = [...quantity_update_btn_list]
@@ -153,12 +147,11 @@
                         quantity_update_btns.forEach(btn => btn.style.display = "none" )
                         let u_key = line_items[i].properties._u_key
                         let removeLineArray = line_items.filter((item)=> { return item.properties && item.properties._u_key == u_key && typeof item.properties._addon_price != 'undefined' } )
-                        console.log("Remove Array", removeLineArray)
                         removeLineArray.length > 0 ? "" : (update_url = update_url + "updates[" + line_items[i].key + "]=" + 0 + "&", update_url_flag = true) 
                     }
                 }
             }
-            update_url_flag ? (console.log('url', update_url), window.location.href = update_url) : console.log("No items to change")
+            update_url_flag ? window.location.href = update_url : "";
         }
         window.pdtAddonUpdate(window.pdtAddOn);
 
@@ -186,7 +179,7 @@
         }
         window.XMLHttpRequest.prototype.open = replace_request;
         
-
+    {% comment %}
         //TODO
         // adding event on checkout button on cart page
         let submt = document.querySelector('[type=submit]');
@@ -226,10 +219,10 @@
                     data_format["appliedDiscount"] = {title : discount.title, valueType: discount.value_type.toUpperCase(), value: parseFloat(discount.value)}
                 })
             }
-            console.log("data json", data_format)
+            //console.log("data json", data_format)
             //let data_string = JSON.stringify(data_format).replace(/"/gi,'\\"')
             let data_string = JSON.stringify(data_format)
-            console.log("data string", data_string)
+            //console.log("data string", data_string)
 
             //make api call
             var requestOptions = {
@@ -244,6 +237,8 @@
             .then( res => res.json() )
             .then( data => window.location.href = data.url )
         }
+    {% endcomment %}
+
     </script>
 {% endif %}
 
