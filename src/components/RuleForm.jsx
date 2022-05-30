@@ -132,7 +132,7 @@ export function RuleForm({ formData, updateFormData, readonly, setDeletedProduct
                                 resourceType="Collection"
                                 selectMultiple={false}
                                 open={openResourcepicker}
-                                // initialSelectionIds = {resourcepickerValue.length > 0 ? resourcepickerValue.map(item =>item.id) : []}
+                                // initialSelectionIds = {(typeof resourcepickerValue.selection != 'undefined') && resourcepickerValue.selection.length > 0 ? resourcepickerValue.selection.map(item => { return { id : item.id} }) : []}
                                 onSelection={(resources) => handleResourcePickerSelection(resources)}
                                 onCancel={() => setOpenResourcepicker(false)}
                                 key="addonCollectionPicker"
@@ -143,7 +143,7 @@ export function RuleForm({ formData, updateFormData, readonly, setDeletedProduct
                                 showVariants={false}
                                 open={openResourcepicker}
                                 showDraft = {false}
-                                // initialSelectionIds = {resourcepickerValue.length > 0 ? resourcepickerValue.map(item =>item.id) : []}
+                                initialSelectionIds = {(typeof resourcepickerValue.selection != 'undefined') && resourcepickerValue.selection.length > 0 ? resourcepickerValue.selection.map(item => { return { id : item.id} }) : []}
                                 onSelection={(resources) => handleResourcePickerSelection(resources)}
                                 onCancel={() => setOpenResourcepicker(false)}
                                 key="addonProductPicker"
@@ -154,7 +154,7 @@ export function RuleForm({ formData, updateFormData, readonly, setDeletedProduct
                             showVariants={true}
                             open={openProductPicker}
                             showDraft = {false}
-                            // initialSelectionIds = {productpickerValue.length > 0 ? productpickerValue.map(item =>item.id) : []}
+                            initialSelectionIds = {(typeof productpickerValue.selection != 'undefined') && productpickerValue.selection.length > 0 ? productpickerValue.selection.map(item => { return { id : item.id} }) : []}
                             onSelection={(resources) => handleProductPicker(resources)}
                             onCancel={() => setOpenProductPicker(false)}
                             key="productPicker"
