@@ -81,6 +81,7 @@ export function Dashboard() {
     ) : null;
 
     const [ruleData, setRuleData] = useState([]);
+    const [ruleNames, setRuleNames] = useState([]);
 
     const saveData = async () => {
         setModalLoader(true)
@@ -169,6 +170,7 @@ export function Dashboard() {
         let db_rules_response = await fetch("/get-rules", { method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(shop) })
         let db_rules = await db_rules_response.json()
         setRuleData(db_rules.data)
+        db_rules.data.length > 0 ? setRuleNames(db_rules.data.map( rule => rule.name)) : "";
         setLoader(false)
     }
 
@@ -333,6 +335,7 @@ export function Dashboard() {
                         primaryAction={{
                             content: 'Save',
                             onAction: saveData,
+                            disabled: (!readonly) && formData.name && ruleNames.includes(formData.name) ? true : false
                         }}
                         secondaryActions={[
                             {
@@ -343,7 +346,7 @@ export function Dashboard() {
                     >
                         <Modal.Section>
                             <Stack vertical>
-                                <RuleForm formData={formData} updateFormData={updateFormField} readonly={readonly} setDeletedProducts={setDeletedProducts} />
+                                <RuleForm formData={formData} updateFormData={updateFormField} readonly={readonly} setDeletedProducts={setDeletedProducts} ruleNames={ruleNames} />
                             </Stack>
                         </Modal.Section>
                     </Modal>

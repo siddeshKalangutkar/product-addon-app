@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { FormLayout, TextField, ChoiceList, Button, Stack, Tag } from "@shopify/polaris";
+import { FormLayout, TextField, ChoiceList, Button, Stack, Tag, InlineError } from "@shopify/polaris";
 import { ResourcePicker } from "@shopify/app-bridge-react";
 
 // import { AddonList } from "./AddonList";
 // import { AddonInput } from "./AddonInput";
 
-export function RuleForm({ formData, updateFormData, readonly, setDeletedProducts }) {
+export function RuleForm({ formData, updateFormData, readonly, setDeletedProducts, ruleNames }) {
     const [value, setValue] = useState(formData.name ? formData.name : "");
     const handleChange = useCallback((newValue) => {
         setValue(newValue), []
@@ -97,7 +97,8 @@ export function RuleForm({ formData, updateFormData, readonly, setDeletedProduct
     return (
         <FormLayout>
             <FormLayout>
-                <TextField label="Rule Title" value={value} onChange={handleChange} readOnly={readonly} />
+                <TextField label="Rule Title" id="ruleName" value={value} onChange={handleChange} readOnly={readonly} />
+                {(!readonly) && formData.name && ruleNames.includes(formData.name) ? (<InlineError message="Rule name must be unique" fieldID="ruleName" />) : "" }
                 <p>Add rule for:</p>
                 <Button onClick={activateProductPicker} >Select Products</Button>
                 <Stack spacing="tight">{selectProductsTag}</Stack>
