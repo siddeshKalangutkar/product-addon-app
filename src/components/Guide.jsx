@@ -1,4 +1,5 @@
 import { Card, Page, Layout, TextContainer, List, Image, Stack, Link, Banner, Heading, Modal, Button, EmptyState, Spinner } from "@shopify/polaris";
+import guideImgUrl from "../assets/instructions.png";
 
 export function Guide() {
 
@@ -7,32 +8,41 @@ export function Guide() {
             <Layout>
                 <Layout.Section>
                     <Card title="Installation process" sectioned>
-                        <TextContainer>
-                            <Heading>Step 1</Heading>
-                            <List >
-                                <List.Item>
-                                    Open <b>Theme Customize</b>.
-                                </List.Item>
-                                <List.Item>
-                                    Under <b>Theme Settings</b> click on <b>App embeds</b>.
-                                </List.Item>
-                                <List.Item>
-                                    Enable the <b>Product Addons Block</b>.
-                                </List.Item>
-                            </List>
-                        </TextContainer>
-                        <br/>
-                        <TextContainer>
-                            <Heading>Step 2</Heading>
-                            <List >
-                                <List.Item>
-                                    Click the block tab to open settings.
-                                </List.Item>
-                                <List.Item>
-                                    Update the value for all the sectors as per your theme.
-                                </List.Item>
-                            </List>
-                        </TextContainer>
+                        <Stack>
+                            <Stack.Item>
+                                <TextContainer>
+                                    <Heading>Step 1</Heading>
+                                    <List >
+                                        <List.Item>
+                                            Open <b>Theme Customize</b>.
+                                        </List.Item>
+                                        <List.Item>
+                                            Under <b>Theme Settings</b> click on <b>App embeds</b>.
+                                        </List.Item>
+                                        <List.Item>
+                                            Enable the <b>Product Addons Block</b>.
+                                        </List.Item>
+                                    </List>
+                                </TextContainer>
+                                <br />
+                                <TextContainer>
+                                    <Heading>Step 2</Heading>
+                                    <List >
+                                        <List.Item>
+                                            Click the block tab to open settings.
+                                        </List.Item>
+                                        <List.Item>
+                                            Update the value for all the sectors as per your theme.
+                                        </List.Item>
+                                    </List>
+                                </TextContainer>
+                            </Stack.Item>
+                            <Stack.Item>
+                                <img
+                                    src={guideImgUrl}
+                                />
+                            </Stack.Item>
+                        </Stack>
                     </Card>
 
                     <Card title="Creating Rules" sectioned>

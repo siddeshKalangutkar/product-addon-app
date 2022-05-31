@@ -121,6 +121,7 @@
             let cart_items = [...cart_item_list]
             for(i=0 ; i < cart_items.length ; i++ ){
                 if (price_array[i]){
+                    {% comment %}
                     {% if block.settings.end_price_selector != blank %}
                     let price_element_list = cart_items[i].querySelectorAll('{{ block.settings.end_price_selector }}')
                     {% endif %}
@@ -128,6 +129,7 @@
                     for(j = 0 ; j < price_elements.length ; j++ ){
                         //price_elements[j].innerHTML = "{{ 0 | money_with_currency | money_without_trailing_zeros | remove: '0' }} " + price_array[i];
                     }
+                    {% endcomment %}
 
                     //change
                     let u_key = line_items[i].properties._u_key
@@ -273,7 +275,7 @@
         "default":".cart-item",
         "label": "Cart Item Selector"
     },
-    {
+    /*{
         "type": "text",
         "id": "total_price_selector",
         "default":".totals__subtotal-value",
@@ -284,7 +286,7 @@
         "id": "end_price_selector",
         "default":".price.price--end",
         "label": "Subtotal Price Selector"
-    },
+    },*/
     {
         "type": "text",
         "id": "quanitity_selector",
