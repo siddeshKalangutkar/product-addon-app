@@ -8,7 +8,7 @@ export function Guide() {
             <Layout>
                 <Layout.Section>
                     <Card title="Installation process" sectioned>
-                        <Stack>
+                        <Stack wrap={true}>
                             <Stack.Item>
                                 <TextContainer>
                                     <Heading>Step 1</Heading>
@@ -37,11 +37,11 @@ export function Guide() {
                                     </List>
                                 </TextContainer>
                             </Stack.Item>
-                            <Stack.Item>
                                 <img
-                                    src={guideImgUrl}
+                                    width="100%"
+                                    style = {{objectFit: 'contain', width: 'calc(100% - 1rem)'}}
+                                    src = {guideImgUrl}
                                 />
-                            </Stack.Item>
                         </Stack>
                     </Card>
 
