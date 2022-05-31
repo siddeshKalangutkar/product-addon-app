@@ -62,6 +62,7 @@
   	border:2px solid #121212;
     font-weight:500;
   	transition:background 0.3s ease-in-out, color 0.3s ease-in-out;
+    cursor: pointer;
 }
 .addon-modal input[type=checkbox]{
     height: 25px;
@@ -124,6 +125,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  cursor: pointer;
 }
 .addon-modal-header .close-btn .line {
   width: 100%;
@@ -241,6 +243,24 @@
   text-align: center;
   font-size: 14px;
   color: #eb0d0d;
+}
+.addon-scroller {
+  display: flex;
+  flex-direction: column;
+  width: calc(100% + 10px);
+  max-height: 440px;
+  overflow-y: scroll;
+}
+.addon-scroller::-webkit-scrollbar-thumb {
+  background-color: #bababa;
+  border-left: 4px solid #fff;
+}
+.addon-scroller::-webkit-scrollbar-track {
+  background: transparent;
+}
+.addon-scroller::-webkit-scrollbar {
+  display: block;
+  width: 12px;
 }
 
 /* cart checkout */

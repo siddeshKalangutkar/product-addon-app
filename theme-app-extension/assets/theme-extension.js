@@ -73,7 +73,7 @@ function toggleModal() {
 // Ajax popup
 async function render_popup(product_id, button) {
     add_spinner(button)
-    let html_section = "";
+    let html_section = "<div class='addon-scroller'>";
     let x = window.pdtJSON[product_id]
     for (let key in x) {
         let arr = x[key].split("|")
@@ -101,6 +101,7 @@ async function render_popup(product_id, button) {
         html_section += `</div>`
     }
     html_section += `
+    </div>
     <span class="cart-error"></span>
     <button class="addon-atc">Add To Cart</button>
     `

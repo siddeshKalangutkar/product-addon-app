@@ -39,7 +39,7 @@ export function Guide() {
                             </Stack.Item>
                                 <img
                                     width="100%"
-                                    style = {{objectFit: 'contain', width: 'calc(100% - 1rem)'}}
+                                    style = {{objectFit: 'contain', width: 'calc(100% - 1rem)', objectPosition: '0 -1px', border: '1px solid rgba(109, 109, 81, 0.5)', padding: '0.5rem', borderRadius: '0.5rem'}}
                                     src = {guideImgUrl}
                                 />
                         </Stack>
