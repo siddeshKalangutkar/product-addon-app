@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { userLoggedInFetch } from "../App";
 import { useAppBridge } from "@shopify/app-bridge-react";
-import { Tabs } from "@shopify/polaris";
+import { Tabs, FooterHelp, Link } from "@shopify/polaris";
 import { Dashboard } from "./Dashboard";
 import { Guide } from "./Guide"
 import { PricePlan } from './PricePlan';
@@ -47,6 +47,7 @@ export function MainWrapper() {
             {
                 pricePlan ?
                     (
+                        <>
                         <Tabs tabs={tabs} selected={selected} onSelect={handleTabChange}>
                             {selected == 0 ?
                                 (<Dashboard />)
@@ -54,6 +55,13 @@ export function MainWrapper() {
                                 (<Guide />)
                             }
                         </Tabs>
+                        <FooterHelp>
+                            For any app related query contact us at{' '}
+                            <Link url="mailto:xyz@support.com" external>
+                                xyz@support.com
+                            </Link>
+                        </FooterHelp>
+                        </>
                     )
                     :
                     (

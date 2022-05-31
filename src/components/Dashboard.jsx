@@ -1,10 +1,11 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { Card, Page, Layout, TextContainer, Image, Stack, Link, Banner, Heading, Modal, Button, EmptyState, Spinner } from "@shopify/polaris";
+import { Card, Page, Layout, TextContainer, Image, Stack, Icon, Banner, Heading, Modal, Button, EmptyState, Spinner, TextStyle } from "@shopify/polaris";
 import { RuleForm } from './RuleForm';
 import { RuleList } from "./RuleList";
 import { userLoggedInFetch } from "../App";
 import { Loading, Toast, useAppBridge } from "@shopify/app-bridge-react";
 import { gql, useMutation, useQuery, useLazyQuery } from "@apollo/client";
+import { CircleAlertMajor } from '@shopify/polaris-icons';
 
 const img = 'https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg';
 
@@ -239,14 +240,14 @@ export function Dashboard() {
 
     const deleteAllRules = async () => {
         setModalLoader(true)
-        try{
-            await fetch("/delete-all-rules", { method: "POST", headers: { 'Content-Type': 'application/json' }})
+        try {
+            await fetch("/delete-all-rules", { method: "POST", headers: { 'Content-Type': 'application/json' } })
             await renderRules()
         }
-        catch(error) {
+        catch (error) {
             console.log("error deleting all data", error)
         }
-        finally{
+        finally {
             setModalLoader(false)
             toggledeleteAllActive()
             toggleToast()
@@ -307,7 +308,21 @@ export function Dashboard() {
                             // )
                         }
                     </Card>
-
+                    {
+                        ruleData.length > 0 ?
+                            (
+                                <div style={{ marginTop: '1rem' }}>
+                                    <Stack vertical={false} alignment="center" distribution="center" sectioned>
+                                        <Stack.Item wrap={false} vertical={false}>
+                                            <Icon source={CircleAlertMajor} color="warning" />
+                                        </Stack.Item>
+                                        <Stack.Item>
+                                            <TextStyle variation="warning" >Delete all the created rules before uninstalling the app.</TextStyle>
+                                        </Stack.Item>
+                                    </Stack>
+                                </div>
+                            ) : ""
+                    }
 
                     <Modal
                         large
