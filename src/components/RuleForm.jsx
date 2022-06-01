@@ -97,9 +97,9 @@ export function RuleForm({ formData, updateFormData, readonly, setDeletedProduct
     return (
         <FormLayout>
             <FormLayout>
-                <TextField label="Rule Title" id="ruleName" value={value} onChange={handleChange} readOnly={readonly} />
+                <TextField label="Rule title" id="ruleName" value={value} onChange={handleChange} readOnly={readonly} />
                 {(!readonly) && formData.name && ruleNames.includes(formData.name) ? (<InlineError message="Rule name must be unique" fieldID="ruleName" />) : "" }
-                <p>Add rule for:</p>
+                <p>Select products for which the rule is to be applied:</p>
                 <Button onClick={activateProductPicker} >Select Products</Button>
                 <Stack spacing="tight">{selectProductsTag}</Stack>
                 {/* <ResourcePicker
@@ -117,7 +117,7 @@ export function RuleForm({ formData, updateFormData, readonly, setDeletedProduct
                 {/* {selectProducts.length > 0 ? (<Stack spacing="tight">{selectProductsTag}</Stack>) : (<Button onClick={setOpenProductPicker} >Select Products</Button>)} */}
 
                 <ChoiceList
-                    title="Select Addons for the rule:"
+                    title="Select addons for the rule:"
                     choices={[
                         { label: 'product', value: 'product', renderChildren },
                         { label: 'collection', value: 'collection', renderChildren },
