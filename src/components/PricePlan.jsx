@@ -11,7 +11,8 @@ export function PricePlan({ activePlan }) {
         let response = await fetch(url)
         let response_data = await response.json()
         if (response_data.success) {
-            window.open(response_data.data)
+            // window.open(response_data.data)
+            window.top.location.href = response_data.data
         }
     }
 
