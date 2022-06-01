@@ -71,7 +71,7 @@ function toggleModal() {
 }
 
 // Ajax popup
-async function render_popup(product_id, button) {
+async function render_popup(product_id, button, variant_details = {}) {
     add_spinner(button)
     let html_section = "<div class='addon-scroller'>";
     let x = window.pdtJSON[product_id]
@@ -106,7 +106,12 @@ async function render_popup(product_id, button) {
     <button class="addon-atc">Add To Cart</button>
     `
     document.querySelector('.addon-modal-body').innerHTML = html_section;
-    document.querySelector(".addon-atc").addEventListener("click", function () { add_products(document.querySelector(".addon-atc")), false })
+    document.querySelector(".addon-atc").addEventListener("click", function () {
+        variant_details && Object.keys(variant_details).length < 0 ?
+            add_products(document.querySelector(".addon-atc"))
+        :
+            add_products(document.querySelector(".addon-atc"), variant_details)
+    , false })
     document.getElementById('product_addon_app').classList.add("active")
     remove_spinner(button)
 }
@@ -164,4 +169,10 @@ function add_spinner(button) {
 function remove_spinner(button) {
     button.querySelector('.loading-overlay').remove();
     button.classList.remove('loading-spinner')
+}
+
+//collection function
+function show_addons(event, button, product_id, variant_details){
+	event.preventDefault();
+  	render_popup(product_id ,button, variant_details)  	
 }

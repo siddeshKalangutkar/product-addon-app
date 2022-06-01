@@ -152,7 +152,7 @@ export function RuleForm({ formData, updateFormData, readonly, setDeletedProduct
                             ) :
                         (<ResourcePicker
                             resourceType="Product"
-                            showVariants={true}
+                            showVariants={false}
                             open={openProductPicker}
                             showDraft = {false}
                             initialSelectionIds = {(typeof productpickerValue.selection != 'undefined') && productpickerValue.selection.length > 0 ? productpickerValue.selection.map(item => { return { id : item.id} }) : []}
