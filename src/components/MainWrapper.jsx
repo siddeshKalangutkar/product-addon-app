@@ -11,7 +11,7 @@ export function MainWrapper() {
     const app = useAppBridge();
     const fetch = userLoggedInFetch(app);
 
-    const [pricePlan, setPricePlan] = useState(true);
+    const [pricePlan, setPricePlan] = useState(0);
     const [activePlan, setActivePlan] = useState(false);
 
     const [selected, setSelected] = useState(0);
@@ -35,8 +35,8 @@ export function MainWrapper() {
     const getAccount = async () => {
         let account_info_response = await fetch("/get-account")
         let account_info = await account_info_response.json()
-        !(account_info.subscriptionPlanId && account_info.status == "active") ? setPricePlan(false) : setPricePlan(true)
-        typeof account_info.status != "undefined" ? setActivePlan(true): "" ;
+        !(account_info.subscriptionPlanId && account_info.status == "active") ? setPricePlan(2) : setPricePlan(1)
+        typeof account_info.status != "undefined" ? setActivePlan(true) : "";
     }
     useEffect(() => {
         getAccount()
@@ -45,28 +45,31 @@ export function MainWrapper() {
     return (
         <>
             {
-                pricePlan ?
+                pricePlan == 1 ?
                     (
                         <>
-                        <Tabs tabs={tabs} selected={selected} onSelect={handleTabChange}>
-                            {selected == 0 ?
-                                (<Dashboard />)
-                                :
-                                (<Guide />)
-                            }
-                        </Tabs>
-                        <FooterHelp>
-                            For any app related query contact us at{' '}
-                            <Link url="mailto:xyz@support.com" external>
-                                xyz@support.com
-                            </Link>
-                        </FooterHelp>
+                            <Tabs tabs={tabs} selected={selected} onSelect={handleTabChange}>
+                                {selected == 0 ?
+                                    (<Dashboard />)
+                                    :
+                                    (<Guide />)
+                                }
+                            </Tabs>
+                            <FooterHelp>
+                                For any app related query contact us at{' '}
+                                <Link url="mailto:xyz@support.com" external>
+                                    xyz@support.com
+                                </Link>
+                            </FooterHelp>
                         </>
                     )
                     :
-                    (
-                        <PricePlan activePlan={activePlan} />
-                    )
+                    pricePlan == 2 ?
+                        (
+                            <PricePlan activePlan={activePlan} />
+                        )
+                        :
+                        ""
             }
 
         </>
