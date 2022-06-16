@@ -14,6 +14,8 @@ const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
 const PORT = parseInt(process.env.PORT || "8081", 10);
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
+import crypto from 'crypto';
+
 import cors from "cors";
 import draft_checkout from "./api/draftOrder.js";
 import { find_access_token, update_rule, get_rules, delete_rule, update_subscription_plan, find_account } from "./db-fucntion.js"
@@ -229,6 +231,42 @@ export async function createServer(
       console.log('Error creating trial charge', err)
       res.status(500).send({ success: true, error: err })
     }
+  });
+
+  function verifyWebhookRequest(req, res, next) {
+    try {
+      const generatedHash = crypto.createHmac('SHA256', Shopify.Context.API_SECRET_KEY).update(JSON.stringify(req.body), 'utf8').digest('base64');
+      //const hmac = req.get(ShopifyHeader.Hmac); // Equal to 'X-Shopify-Hmac-Sha256' at time of coding req.headers['x-shopify-shop-domain']
+      const hmac = typeof req.headers['X-Shopify-Hmac-Sha256'] != "undefined" ? req.headers['X-Shopify-Hmac-Sha256'] : "";
+      console.log("header", req.headers)
+      console.log("header hmac", req.headers['X-Shopify-Hmac-Sha256'])
+
+      const safeCompareResult = Shopify.Utils.safeCompare(generatedHash, hmac);
+
+      if (!!safeCompareResult) {
+        console.log('hmac verified for webhook route, proceeding');
+        next();
+      } else {
+        console.log('Shopify hmac verification for webhook failed, aborting');
+        return res.status(401).json({ succeeded: false, message: 'Not Authorized' }).send();
+      }   
+    } catch(error) {
+      console.log(error);
+      return res.status(401).json({ succeeded: false, message: 'Error caught' }).send();
+    }
+  }
+
+  app.post('/customer/request', verifyWebhookRequest, async(req, res) => {
+    res.status(200).send();
+  });
+
+  app.post('/customer/delete', verifyWebhookRequest, async(req, res) => {
+    res.status(200).send();
+  });
+
+  app.post('/shop/delete', verifyWebhookRequest, async(req, res) => {
+    res.status(200).send();
+    await clear_data(req.headers['x-shopify-shop-domain'])
   });
 
   app.use("/*", (req, res, next) => {
