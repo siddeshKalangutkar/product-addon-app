@@ -146,9 +146,9 @@ export function Dashboard() {
             promise.then(() => (console.log("metafields added")));
         }
 
-        toggleActive()
-        setModalLoader(false)
-        toggleToast()
+        // toggleActive()
+        // setModalLoader(false)
+        // toggleToast()
         let shop_response = await fetch("/get-shop")
         let shop = await shop_response.json();
         let data = formData
@@ -159,6 +159,9 @@ export function Dashboard() {
             .then(res => res.json())
             .then(json => {
                 renderRules()
+                toggleActive()
+                setModalLoader(false)
+                toggleToast()
             })
             .catch(error => console.log(error))
     }
@@ -222,15 +225,18 @@ export function Dashboard() {
         if (promise) {
             promise.then(() => (console.log("metafields deleted")));
         }
-        toggledeleteActive()
-        setModalLoader(false)
-        toggleToast()
+        // toggledeleteActive()
+        // setModalLoader(false)
+        // toggleToast()
         let shop_response = await fetch("/get-shop")
         let { shop } = await shop_response.json();
         let data = { shop: shop, name: deleteData.name }
         fetch("/delete-rule", { method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
             .then(res => res.json())
             .then(json => {
+                toggledeleteActive()
+                setModalLoader(false)
+                toggleToast()
                 renderRules()
             })
             .catch(error => console.log(error))
