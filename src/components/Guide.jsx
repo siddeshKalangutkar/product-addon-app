@@ -1,7 +1,10 @@
 import { Card, Page, Layout, TextContainer, List, Image, Stack, Link, Banner, Heading, Modal, Button, EmptyState, Spinner } from "@shopify/polaris";
 import guideImgUrl from "../assets/instructions.png";
+import {useState} from 'react';
 
 export function Guide() {
+
+    const [visible, setVisible] = useState(false);
 
     return (
         <Page fullWidth>
@@ -37,11 +40,14 @@ export function Guide() {
                                     </List>
                                 </TextContainer>
                             </Stack.Item>
+                            { guideImgUrl && 
                                 <img
                                     width="100%"
-                                    style = {{objectFit: 'contain', width: 'calc(100% - 1rem)', objectPosition: '0 -1px', border: '1px solid rgba(109, 109, 81, 0.5)', padding: '0.5rem', borderRadius: '0.5rem'}}
+                                    style = {{objectFit: 'contain', width: 'calc(100% - 1rem)', objectPosition: '0 -1px', border: '1px solid rgba(109, 109, 81, 0.5)', padding: '0.5rem', borderRadius: '0.5rem', visibility: visible ? 'visible' : 'hidden'}}
                                     src = {guideImgUrl}
+                                    onLoad = {() => { setVisible(true) }}
                                 />
+                            }
                         </Stack>
                     </Card>
 
