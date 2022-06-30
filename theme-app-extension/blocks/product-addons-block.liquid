@@ -262,6 +262,26 @@
     window.pdtJSON = {{pdtJSON}};
 </script>
 
+<style>
+    .addon-modal .addon-rule-title{
+        color: {{ block.settings.rule_title_color }};
+    }
+    .addon-modal .addon-rule-item .name{
+        color: {{ block.settings.product_title_color}};
+    }
+    .addon-modal .addon-rule-item .description{
+        color: {{ block.settings.product_description_color }};
+    }
+    .addon-modal .addon-rule-item .price{
+        color: {{ block.settings.product_price_color }};
+    }
+    .addon-modal .addon-atc{
+        color: {{ block.settings.button_text_color }};
+        background-color: {{block.settings.button_bg_color }};
+    }
+    {{ block.settings.custom_css }}
+</style>
+
 {% schema %}
 {
   "name": "Product Addons Block",
@@ -269,6 +289,10 @@
   "stylesheet": "theme-extension.css",
   "javascript": "theme-extension.js",
   "settings": [
+    {
+      "type": "header",
+      "content": "Cart Page Settings"
+    },
     {
         "type": "text",
         "id": "cart_item_selector",
@@ -298,6 +322,56 @@
         "id": "delete_selector",
         "default":"cart-remove-button",
         "label": "Delete Button Selector"
+    },
+    {
+        "type": "header",
+        "content": "Popup Style Settings"
+    },
+    {
+        "type": "color",
+        "id": "button_bg_color",
+        "default": "#000",
+        "label": "Button Background Color"
+    },
+    {
+        "type": "color",
+        "id": "button_text_color",
+        "default": "#fff",
+        "label": "Button Text Color"
+    },
+    {
+        "type": "color",
+        "id": "rule_title_color",
+        "default": "#000",
+        "label": "Rule Title Color"
+    },
+    {
+        "type": "color",
+        "id": "product_title_color",
+        "default": "#000",
+        "label": "Product Title Color"
+    },
+    {
+        "type": "color",
+        "id": "product_price_color",
+        "default": "#000",
+        "label": "Product Price Color"
+    },
+    {
+        "type": "color",
+        "id": "product_description_color",
+        "default": "#000",
+        "label": "Product Description Color"
+    },
+    {
+        "type": "header",
+        "content": "Custom CSS"
+    },
+    {
+        "type": "textarea",
+        "id": "custom_css",
+        "label": "Add custom css for additional styling",
+        "info": "Example: .class{font-size: 10px;}"
     }
   ]
 }
