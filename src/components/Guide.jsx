@@ -1,6 +1,7 @@
 import { Card, Page, Layout, TextContainer, List, Image, Stack, Link, Banner, Heading, Modal, Button, EmptyState, Spinner } from "@shopify/polaris";
 import guideImgUrl from "../assets/instructions.png";
-import {useState} from 'react';
+import popupStyleImgUrl from "../assets/popup-style.png"
+import { useState } from 'react';
 
 export function Guide() {
 
@@ -40,12 +41,12 @@ export function Guide() {
                                     </List>
                                 </TextContainer>
                             </Stack.Item>
-                            { guideImgUrl && 
+                            {guideImgUrl &&
                                 <img
                                     width="100%"
-                                    style = {{objectFit: 'contain', width: 'calc(100% - 1rem)', objectPosition: '0 -1px', border: '1px solid rgba(109, 109, 81, 0.5)', padding: '0.5rem', borderRadius: '0.5rem', visibility: visible ? 'visible' : 'hidden'}}
-                                    src = {guideImgUrl}
-                                    onLoad = {() => { setVisible(true) }}
+                                    style={{ objectFit: 'contain', width: 'calc(100% - 1rem)', objectPosition: '0 -1px', border: '1px solid rgba(109, 109, 81, 0.5)', padding: '0.5rem', borderRadius: '0.5rem', visibility: visible ? 'visible' : 'hidden' }}
+                                    src={guideImgUrl}
+                                    onLoad={() => { setVisible(true) }}
                                 />
                             }
                         </Stack>
@@ -67,6 +68,36 @@ export function Guide() {
                                     Select the addons type as a product to display specific products as addons or select collection to display the all the product in the collection as addons.
                                 </List.Item>
                             </List>
+                        </TextContainer>
+                    </Card>
+
+                    <Card title="Styling" sectioned>
+                        <TextContainer>
+                            <List >
+                                <List.Item>
+                                    Open <b>Theme Customize</b>.
+                                </List.Item>
+                                <List.Item>
+                                    Under <b>Theme Settings</b> click on <b>App embeds</b>.
+                                </List.Item>
+                                <List.Item>
+                                    Click on <b>Product Addons Block</b> and scroll down to <b>Popup Style Settings</b>.
+                                </List.Item>
+                                <List.Item>
+                                    Customize the style of button and text by providing the required colors to match the theme styles.
+                                </List.Item>
+                                <List.Item>
+                                    Additional styles can be applied by adding CSS in the <b>Custom CSS</b> field.
+                                </List.Item>
+                            </List>
+                            {popupStyleImgUrl &&
+                                <img
+                                    width="100%"
+                                    style={{ objectFit: 'contain', width: 'calc(100% - 1rem)', objectPosition: '0 -1px', border: '1px solid rgba(109, 109, 81, 0.5)', padding: '0.5rem', borderRadius: '0.5rem', visibility: visible ? 'visible' : 'hidden' }}
+                                    src={popupStyleImgUrl}
+                                    onLoad={() => { setVisible(true) }}
+                                />
+                            }
                         </TextContainer>
                     </Card>
 

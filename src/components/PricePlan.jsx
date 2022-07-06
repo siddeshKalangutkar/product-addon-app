@@ -29,16 +29,22 @@ export function PricePlan({ activePlan }) {
                         footerActionAlignment="left"
                     >
                         <TextContainer>
-                            <Heading>Starter Plan</Heading>
+                            <Heading>STANDARD PLAN</Heading>
                             <List >
                                 <List.Item>
-                                    Add product addons
+                                    Display addons with the related products
                                 </List.Item>
                                 <List.Item>
-                                    Theme compatible
+                                    Create infinite rules
                                 </List.Item>
                                 <List.Item>
-                                    Quick customer support
+                                    Easily customize components to match theme styles
+                                </List.Item>
+                                <List.Item>
+                                    Easy integration with theme
+                                </List.Item>
+                                <List.Item>
+                                    Customer support
                                 </List.Item>
                                 {!activePlan ?
                                     (
